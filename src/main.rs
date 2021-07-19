@@ -16,10 +16,7 @@ pub use error::{Error, Result};
 
 #[rocket::launch]
 fn rocket() -> _ {
-    let config = Config::from(
-        Figment::from(Config::default()).merge(figment::providers::Env::prefixed("SHRT_")),
-    )
-    .unwrap();
+    let config = Config::from(Config::figment()).unwrap();
 
     /* Initialize the logger with it's colors and filters */
     TermLogger::init(

@@ -38,9 +38,9 @@ impl Config {
         Ok(Figment::from(provider).extract()?)
     }
 
-    /* Allow the configuration to be extracted from any [`Provider`] */
+    /** Extract figment configuration from the environment */
     pub fn figment() -> Figment {
-        Figment::from(Config::default())
+        Figment::from(Config::default()).merge(figment::providers::Env::prefixed("SHRT_"))
     }
 }
 
