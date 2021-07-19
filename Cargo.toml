@@ -8,3 +8,12 @@ edition = "2018"
 
 [dependencies]
 rocket = "0.5.0-rc"
+serde = "1"
+
+tokio = { version = "1.8", features = ["fs"] }
+rand = "0.8"
+
+thiserror = "1.0"
+figment = "0.10"
+log = "0.4"
+simplelog = "0.10"
