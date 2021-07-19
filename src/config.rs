@@ -9,6 +9,8 @@ pub struct Config {
     /** App's port on which the server will be exposed */
     pub port: u16,
 
+    /** App's Redis server URL */
+    pub redis_url: String,
     /** App's permanent data storage directory */
     pub data_dir: String,
     /** App's temporary data storage directory */
@@ -22,6 +24,7 @@ impl Default for Config {
         Config {
             address: String::from("0.0.0.0"),
             port: 8000,
+            redis_url: String::from("redis://127.0.0.1/"),
             data_dir: String::from("/tmp/shrt"),
             tmp_dir: String::from("/tmp/shrt"),
             slug_length: 7,

@@ -32,7 +32,7 @@ fn rocket() -> _ {
 
     log::info!("Initiating the launch of the `rocket` server !");
 
-    /* Initialize the directories needed for data */
+    /* Initialize the directories needed for data storage */
     fs::create_dir_all(&config.tmp_dir).unwrap();
     fs::create_dir_all(&config.data_dir).unwrap();
 
@@ -43,6 +43,10 @@ fn rocket() -> _ {
             .merge(("port", &config.port))
             .merge(("temp_dir", &config.tmp_dir)),
     )
+    /* Mount `/` routes */
     .mount("/", routes::mounts())
+    /* Attach a redis client to the rocket instance */
+    .manage(redis::Client::open(config.redis_url.clone()).unwrap())
+    /* Attach the config to the rocket instance */
     .manage(config)
 }

@@ -11,6 +11,7 @@ pub fn get<'r>(_slug: String) -> impl Responder<'r, 'static> {}
 pub async fn upload<'r>(
     mut file: Form<TempFile<'_>>,
     config: &State<Config>,
+    _redis: &State<redis::Client>,
 ) -> Result<impl Responder<'r, 'static>> {
     /* Compute the slug and the appropriate storage path from it */
     let slug = utils::slug(config.slug_length);
