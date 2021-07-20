@@ -8,11 +8,12 @@ use simplelog::{ColorChoice, Config as SimpleLogConfig, LevelFilter, TermLogger,
 use std::fs;
 
 mod config;
-mod error;
 mod routes;
+mod types;
+mod utils;
 
 pub use config::Config;
-pub use error::{Error, Result};
+pub use types::{Error, Result};
 
 #[rocket::launch]
 fn rocket() -> _ {

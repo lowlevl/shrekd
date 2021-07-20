@@ -9,5 +9,6 @@ SHare and shoRTen, simple file &amp; url sharing service
     - Download count
     - Custom Slug
     - Checksum verification
+- Allow pastes
 - Delete token
 - Retention curve depending on the weight, with expiration in return headers

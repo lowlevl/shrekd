@@ -15,7 +15,7 @@ pub struct Config {
     pub data_dir: String,
     /** App's temporary data storage directory */
     pub tmp_dir: String,
-    /** URI's random slug length */
+    /** Random URI's slug length */
     pub slug_length: u8,
 }
 
@@ -27,7 +27,7 @@ impl Default for Config {
             redis_url: String::from("redis://127.0.0.1/"),
             data_dir: String::from("/tmp/shrt"),
             tmp_dir: String::from("/tmp/shrt"),
-            slug_length: 7,
+            slug_length: 13,
         }
     }
 }
