@@ -1,5 +1,8 @@
 use chrono::{DateTime, Utc};
-use rocket::data::ByteUnit;
+use rocket::{
+    data::ByteUnit,
+    request::{self, FromRequest, Request},
+};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use url::Url;
@@ -72,7 +75,7 @@ pub struct Record {
     /** [`Record`]'s random *secret* slug */
     slug: String,
     /** Remaining number of accesses, if applicable */
-    accesses: Option<usize>,
+    accesses: Option<u16>,
     /** Date of expiry, if applicable */
     expiry: Option<DateTime<Utc>>,
 }
@@ -101,7 +104,7 @@ impl Record {
         path: PathBuf,
         size: usize,
         slug: String,
-        accesses: Option<usize>,
+        accesses: Option<u16>,
         expiry: Option<DateTime<Utc>>,
     ) -> Self {
         Record {
@@ -154,7 +157,7 @@ impl Record {
                     None
                 }
                 /* Guard against the expiry */
-                (_, Some(expiry)) if expiry >= Utc::now() => {
+                (_, Some(expiry)) if Utc::now() >= expiry => {
                     log::trace!("Record found, but it is expired");
 
                     None
@@ -192,4 +195,125 @@ pub enum RecordData {
     Paste {
         body: String,
     },
+}
+
+/** Structure representing parameters regarding the configuration of [`Record`]s */
+#[derive(Debug)]
+pub struct RecordSettings {
+    /** Maximum number of downloads before the removal of the record */
+    max_downloads: Option<u16>,
+    /** Utc timestamp of removal of the record */
+    expiry_timestamp: Option<i64>,
+    /** Expiry time from now, in seconds of the record */
+    expire_in: Option<i64>,
+    /** Desired `slug` length */
+    slug_length: Option<u8>,
+    /** Desired custom `slug` */
+    custom_slug: Option<String>,
+    /** Checksum of the record to be verified upon upload */
+    data_checksum: Option<String>,
+}
+
+#[rocket::async_trait]
+impl<'r> FromRequest<'r> for RecordSettings {
+    type Error = ();
+
+    async fn from_request(req: &'r Request<'_>) -> request::Outcome<Self, Self::Error> {
+        use rocket::http::Status;
+
+        let max_downloads = match req
+            .headers()
+            .get_one("Max-Downloads")
+            .map(str::parse)
+            .transpose()
+        {
+            Ok(data) => data,
+            Err(_) => return request::Outcome::Failure((Status::BadRequest, ())),
+        };
+
+        let expiry_timestamp = match req
+            .headers()
+            .get_one("Expiry-Timestamp")
+            .map(str::parse)
+            .transpose()
+        {
+            Ok(data) => data,
+            Err(_) => return request::Outcome::Failure((Status::BadRequest, ())),
+        };
+
+        let expire_in = match req
+            .headers()
+            .get_one("Expire-In")
+            .map(str::parse)
+            .transpose()
+        {
+            Ok(data) => data,
+            Err(_) => return request::Outcome::Failure((Status::BadRequest, ())),
+        };
+
+        let slug_length = match req
+            .headers()
+            .get_one("Slug-Length")
+            .map(str::parse)
+            .transpose()
+        {
+            Ok(data) => data,
+            Err(_) => return request::Outcome::Failure((Status::BadRequest, ())),
+        };
+
+        let custom_slug = match req
+            .headers()
+            .get_one("Custom-Slug")
+            .map(str::parse)
+            .transpose()
+        {
+            Ok(data) => data,
+            Err(_) => return request::Outcome::Failure((Status::BadRequest, ())),
+        };
+
+        let data_checksum = match req
+            .headers()
+            .get_one("Data-Checksum")
+            .map(str::parse)
+            .transpose()
+        {
+            Ok(data) => data,
+            Err(_) => return request::Outcome::Failure((Status::BadRequest, ())),
+        };
+
+        /* If the two collide, return a Failure, both cannot be defined at the same time */
+        if expiry_timestamp.is_some() && expire_in.is_some() {
+            return request::Outcome::Failure((Status::BadRequest, ()));
+        }
+
+        request::Outcome::Success(RecordSettings {
+            max_downloads,
+            expiry_timestamp,
+            expire_in,
+            slug_length,
+            custom_slug,
+            data_checksum,
+        })
+    }
+}
+
+impl RecordSettings {
+    /** Extract the number of accesses from the [`RecordSettings`] */
+    pub fn accesses(&self) -> Option<u16> {
+        self.max_downloads
+    }
+
+    /** Compute the expiry from the [`RecordSettings`] */
+    pub fn expiry(&self) -> Option<DateTime<Utc>> {
+        use chrono::{Duration, NaiveDateTime};
+
+        match (self.expiry_timestamp, self.expire_in) {
+            (Some(expiry_timestamp), _) => Some(DateTime::<Utc>::from_utc(
+                NaiveDateTime::from_timestamp(expiry_timestamp, 0),
+                Utc,
+            )),
+            (_, Some(expire_in)) => Some(Utc::now() + Duration::seconds(expire_in)),
+            _ => None,
+        }
+    }
 }
