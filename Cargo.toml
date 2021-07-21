@@ -16,6 +16,7 @@ redis = { version = "0.21", features = ["aio", "tokio-comp"] }
 url = { version = "2.2.0", features = ["serde"] }
 serde = "1"
 serde_json = "1"
+chrono = { version = "0.4", features = ["serde"] }
 
 figment = "0.10"
 log = "0.4"

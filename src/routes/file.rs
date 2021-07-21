@@ -1,11 +1,14 @@
-use rocket::{fs::TempFile, put, response::Responder, State};
+use chrono::{DateTime, NaiveDateTime, Utc};
+use rocket::{fs::TempFile, put, response::Responder, uri, State};
 use tokio::fs;
 
 use crate::{config::Config, types::Record, utils, Result};
 
-#[put("/@", data = "<file>")]
+#[put("/@?<accesses>&<expiry>", data = "<file>")]
 pub async fn upload<'r>(
     mut file: TempFile<'_>,
+    accesses: Option<usize>,
+    expiry: Option<i64>,
     config: &State<Config>,
     redis: &State<redis::Client>,
 ) -> Result<impl Responder<'r, 'static>> {
@@ -17,7 +20,14 @@ pub async fn upload<'r>(
     let size = file.len();
 
     /* Instanciate a new record from it */
-    let record = Record::file(storage.clone(), size as usize, slug.clone(), None, None); // TODO: Permit the set of accesses and expiry
+    let record = Record::file(
+        storage.clone(),
+        size as usize,
+        slug.clone(),
+        accesses,
+        expiry
+            .map(|expiry| DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(expiry, 0), Utc)),
+    );
 
     log::debug!("Received a file upload {:?}", record);
 
@@ -27,5 +37,5 @@ pub async fn upload<'r>(
 
     log::debug!("Successfully persisted the file with the slug `{}`", slug);
 
-    Ok(())
+    Ok(uri!(_, super::get(slug = slug)).to_string())
 }
