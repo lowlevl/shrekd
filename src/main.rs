@@ -27,7 +27,11 @@ fn rocket() -> _ {
     )
     .unwrap();
 
-    log::info!("Initiating the launch of the `rocket` server !");
+    log::info!(
+        "Initiating the launch of the `rocket` server on `{}:{}` !",
+        config.address,
+        config.port
+    );
 
     /* Initialize the directories needed for data storage */
     fs::create_dir_all(&config.tmp_dir).unwrap();

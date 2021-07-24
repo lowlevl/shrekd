@@ -32,7 +32,7 @@ impl Default for Config {
             port: 8000,
             redis_url: String::from("redis://127.0.0.1/"),
             data_dir: String::from("/tmp/shrt"),
-            tmp_dir: String::from("/tmp/shrt"),
+            tmp_dir: String::from("/tmp"),
             slug_length: 13,
             max_file_size: 128.megabytes().into(),
             max_paste_size: 1.megabytes().into(),

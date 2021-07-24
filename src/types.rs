@@ -178,7 +178,7 @@ impl Record {
             .map(|record| serde_json::from_str(&record))
             .transpose()?;
 
-        log::trace!("Retrieved the following data {:?} from Redis", record);
+        log::trace!("Retrieved the following data `{:?}` from Redis", record);
 
         Ok(match record {
             Some(record) => {

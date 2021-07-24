@@ -16,6 +16,7 @@ SHare and shoRTen, simple file, paste &amp; url sharing service
 - [x] Getting record (**GET** `/<slug>`)
 - [ ] Retention curve depending on the weight, with expiration in return headers
 - [ ] Delete token in return headers, allowing deletion of a record
+- [ ] Add the full path when returning the URL
 
 ## Setup
 
