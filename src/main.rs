@@ -10,7 +10,6 @@ use std::fs;
 mod config;
 mod routes;
 mod types;
-mod utils;
 
 pub use config::Config;
 pub use types::{Error, Result};

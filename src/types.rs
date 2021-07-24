@@ -5,7 +5,6 @@ use rocket::{
 };
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use url::Url;
 
 use thiserror::Error;
 
@@ -15,52 +14,45 @@ pub const STORAGE_PREFIX: &str = "shrt";
 #[derive(Error, Debug)]
 pub enum Error {
     /* 4xx errors */
-    #[error("Could not found the record identified with the slug `{0}`")]
+    #[error("Couldn't find the record identified with the slug `{0}`")]
     NotFound(String),
 
     /* 5xx errors */
-    #[error("Configuration Error: {0}")]
+    #[error("There's an error with the configuration ({0})")]
     Config(#[from] figment::Error),
 
-    #[error("IO Error: {0}")]
+    #[error("I/O error: {0}")]
     IO(#[from] tokio::io::Error),
 
-    #[error("Redis Error: {0}")]
+    #[error("Could not query the Redis server ({0})")]
     Redis(#[from] redis::RedisError),
 
-    #[error("Ser/De Error: {0}")]
+    #[error("Serialization or deserialization error ({0})")]
     SerDe(#[from] serde_json::Error),
 }
 
 impl<'r, 'o: 'r> rocket::response::Responder<'r, 'o> for Error {
-    fn respond_to(
-        self,
-        _request: &'r rocket::request::Request<'_>,
-    ) -> rocket::response::Result<'o> {
-        use rocket::{http::Status, response::Response};
-        use std::io::Cursor;
+    fn respond_to(self, req: &'r rocket::request::Request<'_>) -> rocket::response::Result<'o> {
+        use rocket::{http::Status, response::status, serde::json};
 
-        // #[derive(Serialize, Deserialize)]
-        // struct ErrorResponse {
-        //     message: String,
-        // }
+        #[derive(Serialize)]
+        struct ErrorResponse {
+            message: String,
+        }
+        let error = json::Json(ErrorResponse {
+            message: self.to_string(),
+        });
 
-        let status = match self {
+        Ok(match self {
             /* 4xx errors */
-            Error::NotFound(_) => Status::NotFound,
+            Error::NotFound(_) => status::NotFound(error).respond_to(req)?,
 
             /* 5xx errors */
-            Error::Config(_) => Status::InternalServerError,
-            Error::Redis(_) => Status::ServiceUnavailable,
-            Error::IO(_) => Status::InternalServerError,
-            Error::SerDe(_) => Status::InternalServerError,
-        };
-        let output = self.to_string();
-
-        Ok(Response::build()
-            .status(status)
-            .sized_body(output.len(), Cursor::new(output))
-            .finalize())
+            Error::Redis(_) => status::Custom(Status::ServiceUnavailable, error).respond_to(req)?,
+            Error::Config(_) | Error::IO(_) | Error::SerDe(_) => {
+                status::Custom(Status::InternalServerError, error).respond_to(req)?
+            }
+        })
     }
 }
 
@@ -86,7 +78,7 @@ impl std::fmt::Debug for Record {
             RecordData::File { path, size } => {
                 write!(f, "Record::File<{:?}, {}>", path, ByteUnit::from(*size))
             }
-            RecordData::Redirect { target } => write!(f, "Record::Redirect<{}>", target),
+            RecordData::Redirect { to } => write!(f, "Record::Redirect<{}>", to),
             RecordData::Paste { body } => write!(f, "Record::Paste<{} chars>", body.len()),
         }?;
 
@@ -189,7 +181,7 @@ pub enum RecordData {
     },
     /** Represents a URL redirect, see [`Record`] */
     Redirect {
-        target: Url,
+        to: rocket::http::uri::Reference<'static>,
     },
     /* Represents a paste in utf-8, see [`Record`] */
     Paste {
@@ -315,5 +307,34 @@ impl RecordSettings {
             (_, Some(expire_in)) => Some(Utc::now() + Duration::seconds(expire_in)),
             _ => None,
         }
+    }
+
+    /** Compute the slug from the [`RecordSettings`] and [`Config`] and ensure it does not collide */
+    pub async fn slug(
+        &self,
+        config: &crate::Config,
+        conn: &mut redis::aio::Connection,
+    ) -> Result<String> {
+        use rand::{distributions::Alphanumeric, Rng};
+
+        Ok(match self.custom_slug {
+            /* If a custom slug exists, is not empty and does not exist, use it */
+            Some(ref slug)
+                if slug.len() > 0 && Record::pull(&slug, &mut *conn).await?.is_none() =>
+            {
+                slug.clone()
+            }
+            /* Else, generate a random slug of `max(<slug configured length>, <desired length>)` */
+            _ => {
+                let length =
+                    std::cmp::max(config.slug_length, self.slug_length.unwrap_or_default());
+
+                rand::thread_rng()
+                    .sample_iter(&Alphanumeric)
+                    .take(length as usize)
+                    .map(char::from)
+                    .collect()
+            }
+        })
     }
 }

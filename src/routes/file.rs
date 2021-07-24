@@ -1,13 +1,14 @@
-use rocket::{fs::TempFile, put, response::Responder, uri, State};
+use rocket::{fs::TempFile, post, response::Responder, uri, State};
 use tokio::fs;
 
+use super::CreatedResponse;
 use crate::{
     config::Config,
     types::{Record, RecordSettings},
-    utils, Result,
+    Result,
 };
 
-#[put("/@", data = "<file>")]
+#[post("/file", data = "<file>")]
 pub async fn upload<'r>(
     mut file: TempFile<'_>,
     settings: RecordSettings,
@@ -17,7 +18,7 @@ pub async fn upload<'r>(
     let mut conn = redis.get_async_connection().await?;
 
     /* Compute the slug and the appropriate storage path from it */
-    let slug = utils::slug(config.slug_length);
+    let slug = settings.slug(&config, &mut conn).await?;
     let storage = fs::canonicalize(&config.data_dir).await?.join(&slug);
     let size = file.len();
 
@@ -38,5 +39,7 @@ pub async fn upload<'r>(
 
     log::debug!("Successfully persisted the file with the slug `{}`", slug);
 
-    Ok(uri!(_, super::get(slug = slug)).to_string())
+    Ok(CreatedResponse(
+        uri!(_, super::get(slug = slug)).to_string(),
+    ))
 }

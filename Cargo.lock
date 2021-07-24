@@ -911,6 +911,7 @@ dependencies = [
  "rocket_codegen",
  "rocket_http",
  "serde",
+ "serde_json",
  "state",
  "tempfile",
  "time 0.2.27",
@@ -1093,7 +1094,6 @@ dependencies = [
  "simplelog",
  "thiserror",
  "tokio",
- "url",
 ]
 
 [[package]]
@@ -1508,7 +1508,6 @@ dependencies = [
  "idna",
  "matches",
  "percent-encoding",
- "serde",
 ]
 
 [[package]]

@@ -12,6 +12,10 @@ pub fn mounts() -> Vec<rocket::Route> {
     routes![file::upload, get]
 }
 
+#[derive(Responder)]
+#[response(status = 201)]
+struct CreatedResponse(String);
+
 #[derive(Debug, Responder)]
 pub enum RecordResponse {
     #[response(content_type = "binary")]
@@ -36,6 +40,9 @@ pub async fn get<'r>(
 
     Ok(match record.data() {
         RecordData::File { path, .. } => RecordResponse::File(fs::File::open(path).await?),
-        _ => unimplemented!(),
+        RecordData::Redirect { to } => {
+            RecordResponse::Redirect(rocket::response::Redirect::to(to.clone()))
+        }
+        RecordData::Paste { body } => RecordResponse::Paste(body.clone()),
     })
 }
