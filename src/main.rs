@@ -49,7 +49,7 @@ fn rocket() -> _ {
     /* Mount `/` routes */
     .mount("/", routes::mounts())
     /* Attach a redis client to the rocket instance */
-    .manage(redis::Client::open(config.redis_url.clone()).unwrap())
+    .manage(redis::Client::open(config.redis_url.as_str()).unwrap())
     /* Attach the config to the rocket instance */
     .manage(config)
 }

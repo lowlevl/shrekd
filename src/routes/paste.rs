@@ -24,7 +24,7 @@ pub async fn create<'r>(
     let mut conn = redis.get_async_connection().await?;
 
     /* Compute the slug and the appropriate storage path from it */
-    let slug = settings.slug(&config, &mut conn).await?;
+    let slug = settings.slug(config, &mut conn).await?;
 
     /* Instanciate a new record from it */
     let record = Record::paste(data, slug.clone(), settings.accesses(), settings.expiry());

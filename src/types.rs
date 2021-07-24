@@ -12,6 +12,7 @@ use thiserror::Error;
 pub const STORAGE_PREFIX: &str = "shrt";
 
 /** Represent's an application's error */
+#[allow(clippy::large_enum_variant)]
 #[derive(Error, Debug)]
 pub enum Error {
     /* 4xx errors */
@@ -215,6 +216,7 @@ impl Record {
 }
 
 /** Represents a record's data, or a link to it */
+#[allow(clippy::large_enum_variant)]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum RecordData {
     /** Represents a stored file, see [`Record`] */
@@ -362,7 +364,7 @@ impl RecordSettings {
 
         Ok(match self.custom_slug {
             /* If a custom slug exists, is not empty and does not exist, use it */
-            Some(ref slug) if slug.len() > 0 && !Record::exists(slug, &mut *conn).await? => {
+            Some(ref slug) if !slug.is_empty() && !Record::exists(slug, &mut *conn).await? => {
                 slug.clone()
             }
             /* Else, generate a random slug of `max(<slug configured length>, <desired length>)` */

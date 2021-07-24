@@ -7,6 +7,7 @@ mod file;
 mod paste;
 mod redirect;
 
+#[allow(clippy::nonstandard_macro_braces)]
 pub fn mounts() -> Vec<rocket::Route> {
     /*! Return the list of the application's exposed endpoints */
     routes![file::upload, paste::create, get]
@@ -16,6 +17,7 @@ pub fn mounts() -> Vec<rocket::Route> {
 #[response(status = 201)]
 struct CreatedResponse(String);
 
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug, Responder)]
 pub enum RecordResponse {
     #[response(content_type = "binary")]

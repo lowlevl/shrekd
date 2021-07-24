@@ -20,7 +20,7 @@ pub async fn upload<'r>(
     let mut conn = redis.get_async_connection().await?;
 
     /* Compute the slug and the appropriate storage path from it */
-    let slug = settings.slug(&config, &mut conn).await?;
+    let slug = settings.slug(config, &mut conn).await?;
     let storage = fs::canonicalize(&config.data_dir).await?.join(&slug);
     let size = file.len();
 
