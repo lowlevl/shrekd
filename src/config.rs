@@ -2,15 +2,15 @@ use figment::{Figment, Metadata, Profile, Provider};
 use rocket::data::ToByteUnit;
 use serde::{Deserialize, Serialize};
 
-/** App's global configuration structure */
+/** Global configuration structure */
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
-    /** App's address on which the server will be exposed */
+    /** Address on which the server will be exposed */
     pub address: String,
-    /** App's port on which the server will be exposed */
+    /** Port on which the server will be exposed */
     pub port: u16,
 
-    /** App's Redis server URL */
+    /** Redis server URL */
     pub redis_url: String,
     /** App's permanent data storage directory */
     pub data_dir: String,

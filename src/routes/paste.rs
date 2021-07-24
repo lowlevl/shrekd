@@ -16,9 +16,9 @@ pub async fn create<'r>(
 ) -> Result<impl Responder<'r, 'static>> {
     /* If the paste data is malformed return an error */
     let data = data
-        .map_err(|err| Error::PasteUpload(err.to_string()))
+        .map_err(|err| Error::PasteCreation(err.to_string()))
         .and_then(|bytes| {
-            String::from_utf8(bytes).map_err(|err| Error::PasteUpload(err.to_string()))
+            String::from_utf8(bytes).map_err(|err| Error::PasteCreation(err.to_string()))
         })?;
 
     let mut conn = redis.get_async_connection().await?;

@@ -8,6 +8,7 @@ use std::path::PathBuf;
 
 use thiserror::Error;
 
+/** The storage prefix for keys on Redis */
 pub const STORAGE_PREFIX: &str = "shrt";
 
 /** Represent's an application's error */
@@ -21,7 +22,7 @@ pub enum Error {
     FileUpload(String),
 
     #[error("Paste creation failed ({0})")]
-    PasteUpload(String),
+    PasteCreation(String),
 
     /* 5xx errors */
     #[error("There's an error with the configuration ({0})")]
@@ -52,7 +53,7 @@ impl<'r, 'o: 'r> rocket::response::Responder<'r, 'o> for Error {
         Ok(match self {
             /* 4xx errors */
             Error::NotFound(_) => status::NotFound(error).respond_to(req)?,
-            Error::PasteUpload(_) | Error::FileUpload(_) => {
+            Error::PasteCreation(_) | Error::FileUpload(_) => {
                 status::Custom(Status::UnprocessableEntity, error).respond_to(req)?
             }
 
@@ -116,6 +117,7 @@ impl Record {
         }
     }
 
+    /** Instanciate a new `Paste`-variant record */
     pub fn paste(
         data: String,
         slug: String,
@@ -163,7 +165,7 @@ impl Record {
         Ok(conn.del(Self::key(&self.slug)).await?)
     }
 
-    /** Pull the [`Record`] from the Redis server */
+    /** Pull a [`Record`] from the Redis server from it's `slug` */
     pub async fn pull(
         slug: &str,
         conn: &mut redis::aio::Connection,
@@ -204,6 +206,7 @@ impl Record {
         })
     }
 
+    /** Checks for the existence of a [`Record`] from it's `slug` in the server */
     pub async fn exists(slug: &str, conn: &mut redis::aio::Connection) -> Result<bool> {
         use redis::AsyncCommands;
 
@@ -349,7 +352,7 @@ impl RecordSettings {
         }
     }
 
-    /** Compute the slug from the [`RecordSettings`] and [`Config`] and ensure it does not collide */
+    /** Compute the slug from the [`RecordSettings`] and [`Config`] and ensure it's not colliding */
     pub async fn slug(
         &self,
         config: &crate::Config,
