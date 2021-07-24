@@ -143,9 +143,24 @@ impl Record {
     pub async fn push(&self, conn: &mut redis::aio::Connection) -> crate::Result<()> {
         use redis::AsyncCommands;
 
-        Ok(conn
-            .set(Self::key(&self.slug), serde_json::to_string(self)?)
-            .await?)
+        /* Push the Record into Redis */
+        conn.set(Self::key(&self.slug), serde_json::to_string(self)?)
+            .await?;
+
+        if let Some(expiry) = self.expiry {
+            /* Set it's expiry if required */
+            conn.expire_at(Self::key(&self.slug), expiry.timestamp() as usize)
+                .await?
+        }
+
+        Ok(())
+    }
+
+    /** Delete the [`Record`] from the Redis server */
+    pub async fn delete(&self, conn: &mut redis::aio::Connection) -> crate::Result<()> {
+        use redis::AsyncCommands;
+
+        Ok(conn.del(Self::key(&self.slug)).await?)
     }
 
     /** Pull the [`Record`] from the Redis server */
@@ -164,33 +179,35 @@ impl Record {
         log::trace!("Retrieved the following data {:?} from Redis", record);
 
         Ok(match record {
-            Some(record) => match (record.accesses, record.expiry) {
-                /* Guard against the accesses count */
-                (Some(accesses), _) if accesses == 0 => {
-                    log::trace!("Record found, but there's no accesses left");
+            Some(record) => {
+                let record = Record {
+                    /* Register a new access if needed */
+                    accesses: record.accesses.map(|count| count - 1),
+                    ..record
+                };
 
-                    None
-                }
-                /* Guard against the expiry */
-                (_, Some(expiry)) if Utc::now() >= expiry => {
-                    log::trace!("Record found, but it is expired");
+                match record.accesses {
+                    Some(0) => {
+                        log::trace!("Record has no accesses left, removing");
+                        record.delete(&mut *conn).await?
+                    }
+                    Some(count) => {
+                        log::trace!("Record has `{}` accesses left, pushing change", count);
+                        record.push(&mut *conn).await?
+                    }
+                    None => (),
+                };
 
-                    None
-                }
-                /* If an access counter is defined, consume one */
-                (Some(_accesses), _) => {
-                    let record = Record {
-                        accesses: record.accesses.map(|count| count - 1),
-                        ..record
-                    };
-                    record.push(&mut *conn).await?;
-
-                    Some(record)
-                }
-                _ => Some(record),
-            },
+                Some(record)
+            }
             _ => None,
         })
+    }
+
+    pub async fn exists(slug: &str, conn: &mut redis::aio::Connection) -> Result<bool> {
+        use redis::AsyncCommands;
+
+        Ok(conn.exists(Self::key(slug)).await?)
     }
 }
 
@@ -342,9 +359,7 @@ impl RecordSettings {
 
         Ok(match self.custom_slug {
             /* If a custom slug exists, is not empty and does not exist, use it */
-            Some(ref slug)
-                if slug.len() > 0 && Record::pull(&slug, &mut *conn).await?.is_none() =>
-            {
+            Some(ref slug) if slug.len() > 0 && !Record::exists(slug, &mut *conn).await? => {
                 slug.clone()
             }
             /* Else, generate a random slug of `max(<slug configured length>, <desired length>)` */
