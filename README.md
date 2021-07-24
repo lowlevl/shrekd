@@ -12,7 +12,7 @@ SHare and shoRTen, simple file, paste &amp; url sharing service
     - [ ] Input Checksum verification
 - [x] File upload (**POST** `/file` *with streamed input*)
 - [ ] Redirect creation (**POST** `/redirect`)
-- [ ] Paste creation (**POST** `/paste`)
+- [x] Paste creation (**POST** `/paste`)
 - [x] Getting record (**GET** `/<slug>`)
 - [ ] Retention curve depending on the weight, with expiration in return headers
 - [ ] Delete token in return headers, allowing deletion of a record

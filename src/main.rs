@@ -38,7 +38,9 @@ fn rocket() -> _ {
         Figment::from(rocket::Config::default())
             .merge(("address", &config.address))
             .merge(("port", &config.port))
-            .merge(("temp_dir", &config.tmp_dir)),
+            .merge(("temp_dir", &config.tmp_dir))
+            .merge(("limits.file", &config.max_file_size))
+            .merge(("limits.bytes", &config.max_paste_size)),
     )
     /* Mount `/` routes */
     .mount("/", routes::mounts())

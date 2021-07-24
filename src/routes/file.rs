@@ -5,16 +5,18 @@ use super::CreatedResponse;
 use crate::{
     config::Config,
     types::{Record, RecordSettings},
-    Result,
+    Error, Result,
 };
 
 #[post("/file", data = "<file>")]
 pub async fn upload<'r>(
-    mut file: TempFile<'_>,
+    file: Result<TempFile<'_>, std::io::Error>,
     settings: RecordSettings,
     config: &State<Config>,
     redis: &State<redis::Client>,
 ) -> Result<impl Responder<'r, 'static>> {
+    let mut file = file.map_err(|err| Error::FileUpload(err.to_string()))?;
+
     let mut conn = redis.get_async_connection().await?;
 
     /* Compute the slug and the appropriate storage path from it */

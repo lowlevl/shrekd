@@ -17,6 +17,12 @@ pub enum Error {
     #[error("Couldn't find the record identified with the slug `{0}`")]
     NotFound(String),
 
+    #[error("File upload failed ({0})")]
+    FileUpload(String),
+
+    #[error("Paste creation failed ({0})")]
+    PasteUpload(String),
+
     /* 5xx errors */
     #[error("There's an error with the configuration ({0})")]
     Config(#[from] figment::Error),
@@ -46,6 +52,9 @@ impl<'r, 'o: 'r> rocket::response::Responder<'r, 'o> for Error {
         Ok(match self {
             /* 4xx errors */
             Error::NotFound(_) => status::NotFound(error).respond_to(req)?,
+            Error::PasteUpload(_) | Error::FileUpload(_) => {
+                status::Custom(Status::UnprocessableEntity, error).respond_to(req)?
+            }
 
             /* 5xx errors */
             Error::Redis(_) => status::Custom(Status::ServiceUnavailable, error).respond_to(req)?,
@@ -101,6 +110,20 @@ impl Record {
     ) -> Self {
         Record {
             data: RecordData::File { path, size },
+            slug,
+            accesses,
+            expiry,
+        }
+    }
+
+    pub fn paste(
+        data: String,
+        slug: String,
+        accesses: Option<u16>,
+        expiry: Option<DateTime<Utc>>,
+    ) -> Self {
+        Record {
+            data: RecordData::Paste { body: data },
             slug,
             accesses,
             expiry,

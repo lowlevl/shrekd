@@ -1,4 +1,5 @@
 use figment::{Figment, Metadata, Profile, Provider};
+use rocket::data::ToByteUnit;
 use serde::{Deserialize, Serialize};
 
 /** App's global configuration structure */
@@ -17,6 +18,11 @@ pub struct Config {
     pub tmp_dir: String,
     /** Random URI's slug length */
     pub slug_length: u8,
+
+    /** Max file size */
+    pub max_file_size: u64,
+    /** Max paste size */
+    pub max_paste_size: u64,
 }
 
 impl Default for Config {
@@ -28,6 +34,8 @@ impl Default for Config {
             data_dir: String::from("/tmp/shrt"),
             tmp_dir: String::from("/tmp/shrt"),
             slug_length: 13,
+            max_file_size: 128.megabytes().into(),
+            max_paste_size: 1.megabytes().into(),
         }
     }
 }

@@ -9,7 +9,7 @@ mod redirect;
 
 pub fn mounts() -> Vec<rocket::Route> {
     /*! Return the list of the application's exposed endpoints */
-    routes![file::upload, get]
+    routes![file::upload, paste::create, get]
 }
 
 #[derive(Responder)]
