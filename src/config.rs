@@ -3,7 +3,7 @@ use rocket::data::ToByteUnit;
 use serde::{Deserialize, Serialize};
 
 /** Global configuration structure */
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Config {
     /** Address on which the server will be exposed */
     pub address: String,

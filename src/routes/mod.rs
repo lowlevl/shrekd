@@ -38,6 +38,8 @@ pub async fn get<'r>(
         .await?
         .ok_or(crate::Error::NotFound(slug))?;
 
+    tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+
     log::debug!("Returning {:#?}", record);
 
     Ok(match record.data() {

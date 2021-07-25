@@ -9,7 +9,7 @@ use std::path::PathBuf;
 use thiserror::Error;
 
 /** The storage prefix for keys on Redis */
-pub const STORAGE_PREFIX: &str = "shrt";
+pub const STORAGE_PREFIX: &str = "shrt:";
 
 /** Represent's an application's error */
 #[allow(clippy::large_enum_variant)]
@@ -134,7 +134,7 @@ impl Record {
     }
 
     fn key(slug: &str) -> String {
-        format!("{}:{}", STORAGE_PREFIX, slug)
+        [STORAGE_PREFIX, slug].concat()
     }
 
     /** Access the underlying [`RecordData`] */
