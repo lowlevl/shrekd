@@ -9,7 +9,7 @@ use crate::{
 };
 
 #[post("/file", data = "<file>")]
-pub async fn upload<'r>(
+pub async fn create<'r>(
     file: Result<TempFile<'_>, std::io::Error>,
     settings: RecordSettings,
     config: &State<Config>,

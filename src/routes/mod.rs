@@ -10,7 +10,7 @@ mod redirect;
 #[allow(clippy::nonstandard_macro_braces)]
 pub fn mounts() -> Vec<rocket::Route> {
     /*! Return the list of the application's exposed endpoints */
-    routes![file::upload, paste::create, redirect::create, get]
+    routes![file::create, paste::create, redirect::create, get]
 }
 
 #[derive(Responder)]
