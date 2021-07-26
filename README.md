@@ -11,7 +11,7 @@ SHare and shoRTen, simple file, paste &amp; url sharing service
     - [x] Maximum download count
     - [ ] Input Checksum verification
 - [x] File upload (**POST** `/file` *with streamed input*)
-- [ ] Redirect creation (**POST** `/redirect`)
+- [x] Redirect creation (**POST** `/redirect`)
 - [x] Paste creation (**POST** `/paste`)
 - [x] Getting record (**GET** `/<slug>`)
 - [ ] Retention curve depending on the weight, with expiration in return headers
