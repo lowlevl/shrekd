@@ -18,6 +18,8 @@ SHare and shoRTen, simple file, paste &amp; url sharing service
 - [ ] Delete token in return headers, allowing deletion of a record
 - [ ] Add the full path when returning the URL
 
+- [ ] Reliability — Fix race conditions and use redis transactions
+
 ## Setup
 
 Currently the project requires you to host a **Redis** server locally for it to function properly.

@@ -31,7 +31,7 @@ pub async fn create<'r>(
 
     log::debug!("Received a new paste creation {:?}", record);
 
-    /* Finally try to persist this file, and push the record */
+    /* Finally try to push the record */
     record.push(&mut conn).await?;
 
     log::debug!("Successfully persisted the paste with the slug `{}`", slug);

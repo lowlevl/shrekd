@@ -10,7 +10,7 @@ mod redirect;
 #[allow(clippy::nonstandard_macro_braces)]
 pub fn mounts() -> Vec<rocket::Route> {
     /*! Return the list of the application's exposed endpoints */
-    routes![file::upload, paste::create, get]
+    routes![file::upload, paste::create, redirect::create, get]
 }
 
 #[derive(Responder)]
@@ -38,7 +38,8 @@ pub async fn get<'r>(
         .await?
         .ok_or(crate::Error::NotFound(slug))?;
 
-    tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+    /* FIXME: There's a race condition here with the garbage-collector */
+    tokio::time::sleep(std::time::Duration::from_secs(1)).await;
 
     log::debug!("Returning {:#?}", record);
 

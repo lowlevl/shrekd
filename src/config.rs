@@ -30,7 +30,7 @@ impl Default for Config {
         Config {
             address: String::from("0.0.0.0"),
             port: 8000,
-            redis_url: String::from("redis://127.0.0.1/"),
+            redis_url: String::from("redis://127.0.0.1:6379"),
             data_dir: String::from("/tmp/shrt"),
             tmp_dir: String::from("/tmp"),
             slug_length: 13,

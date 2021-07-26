@@ -25,6 +25,9 @@ pub enum Error {
     #[error("Paste creation failed ({0})")]
     PasteCreation(String),
 
+    #[error("Redirect creation failed ({0})")]
+    RedirectCreation(String),
+
     /* 5xx errors */
     #[error("There's an error with the configuration ({0})")]
     Config(#[from] figment::Error),
@@ -54,7 +57,7 @@ impl<'r, 'o: 'r> rocket::response::Responder<'r, 'o> for Error {
         Ok(match self {
             /* 4xx errors */
             Error::NotFound(_) => status::NotFound(error).respond_to(req)?,
-            Error::PasteCreation(_) | Error::FileUpload(_) => {
+            Error::FileUpload(_) | Error::PasteCreation(_) | Error::RedirectCreation(_) => {
                 status::Custom(Status::UnprocessableEntity, error).respond_to(req)?
             }
 
@@ -127,6 +130,21 @@ impl Record {
     ) -> Self {
         Record {
             data: RecordData::Paste { body: data },
+            slug,
+            accesses,
+            expiry,
+        }
+    }
+
+    /** Instanciate a new `Redirect`-variant record */
+    pub fn redirect(
+        url: rocket::http::uri::Absolute<'static>,
+        slug: String,
+        accesses: Option<u16>,
+        expiry: Option<DateTime<Utc>>,
+    ) -> Self {
+        Record {
+            data: RecordData::Redirect { to: url },
             slug,
             accesses,
             expiry,
@@ -226,7 +244,7 @@ pub enum RecordData {
     },
     /** Represents a URL redirect, see [`Record`] */
     Redirect {
-        to: rocket::http::uri::Reference<'static>,
+        to: rocket::http::uri::Absolute<'static>,
     },
     /* Represents a paste in utf-8, see [`Record`] */
     Paste {
@@ -237,8 +255,8 @@ pub enum RecordData {
 /** Structure representing parameters regarding the configuration of [`Record`]s */
 #[derive(Debug)]
 pub struct RecordSettings {
-    /** Maximum number of downloads before the removal of the record */
-    max_downloads: Option<u16>,
+    /** Maximum number of accesses before the removal of the record */
+    max_access: Option<u16>,
     /** Utc timestamp of removal of the record */
     expiry_timestamp: Option<i64>,
     /** Expiry time from now, in seconds of the record */
@@ -258,9 +276,9 @@ impl<'r> FromRequest<'r> for RecordSettings {
     async fn from_request(req: &'r Request<'_>) -> request::Outcome<Self, Self::Error> {
         use rocket::http::Status;
 
-        let max_downloads = match req
+        let max_access = match req
             .headers()
-            .get_one("Max-Downloads")
+            .get_one("Max-Access")
             .map(str::parse)
             .transpose()
         {
@@ -324,7 +342,7 @@ impl<'r> FromRequest<'r> for RecordSettings {
         }
 
         request::Outcome::Success(RecordSettings {
-            max_downloads,
+            max_access,
             expiry_timestamp,
             expire_in,
             slug_length,
@@ -337,7 +355,7 @@ impl<'r> FromRequest<'r> for RecordSettings {
 impl RecordSettings {
     /** Extract the number of accesses from the [`RecordSettings`] */
     pub fn accesses(&self) -> Option<u16> {
-        self.max_downloads
+        self.max_access
     }
 
     /** Compute the expiry from the [`RecordSettings`] */
