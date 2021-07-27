@@ -27,16 +27,19 @@ pub async fn create<'r>(
     let slug = settings.slug(config, &mut conn).await?;
 
     /* Instanciate a new record from it */
-    let record = Record::paste(data, slug.clone(), settings.accesses(), settings.expiry());
+    let record = Record::paste(data, slug, settings.accesses(), settings.expiry());
 
     log::debug!("Received a new paste creation {:?}", record);
 
     /* Finally try to push the record */
-    record.push(&mut conn).await?;
+    record.persist(&mut conn).await?;
 
-    log::debug!("Successfully persisted the paste with the slug `{}`", slug);
+    log::debug!(
+        "Successfully persisted the paste with the slug `{}`",
+        record.slug()
+    );
 
     Ok(CreatedResponse(
-        uri!(_, super::get(slug = slug)).to_string(),
+        uri!(_, super::get(slug = record.slug())).to_string(),
     ))
 }

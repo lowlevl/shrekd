@@ -34,20 +34,23 @@ pub async fn get<'r>(
 ) -> crate::Result<impl Responder<'r, 'static>> {
     let mut conn = redis.get_async_connection().await?;
 
-    let record = Record::pull(&slug, &mut conn)
+    let record = Record::fetch(&slug, &mut conn)
         .await?
         .ok_or(crate::Error::NotFound(slug))?;
 
-    /* FIXME: There's a race condition here with the garbage-collector */
-    tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+    log::debug!("Found {:#?}", record);
 
-    log::debug!("Returning {:#?}", record);
-
-    Ok(match record.data() {
+    /* Transform the record's data into the suited response */
+    let response = match record.data() {
         RecordData::File { path, .. } => RecordResponse::File(fs::File::open(path).await?),
         RecordData::Redirect { to } => {
             RecordResponse::Redirect(rocket::response::Redirect::to(to.clone()))
         }
         RecordData::Paste { body } => RecordResponse::Paste(body.clone()),
-    })
+    };
+
+    /* Consume the record to update it's access count if required */
+    record.consume(&mut conn).await?;
+
+    Ok(response)
 }

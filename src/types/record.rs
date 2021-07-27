@@ -90,13 +90,18 @@ impl Record {
         [STORAGE_PREFIX, slug].concat()
     }
 
-    /** Access the underlying [`RecordData`] */
+    /** Access the [`Record`]'s [`RecordData`] */
     pub fn data(&self) -> &RecordData {
         &self.data
     }
 
-    /** Push the [`Record`] to the Redis server */
-    pub async fn push(&self, conn: &mut redis::aio::Connection) -> crate::Result<()> {
+    /** Access the [`Record`]'s `slug` */
+    pub fn slug(&self) -> &str {
+        &self.slug
+    }
+
+    /** Persist the [`Record`] to the Redis server */
+    pub async fn persist(&self, conn: &mut redis::aio::Connection) -> crate::Result<()> {
         use redis::AsyncCommands;
 
         /* Push the Record into Redis */
@@ -120,44 +125,40 @@ impl Record {
     }
 
     /** Pull a [`Record`] from the Redis server from it's `slug` */
-    pub async fn pull(
+    pub async fn fetch(
         slug: &str,
         conn: &mut redis::aio::Connection,
     ) -> crate::Result<Option<Self>> {
         use redis::AsyncCommands;
 
-        let record: Option<Record> = conn
+        Ok(conn
             .get::<_, Option<String>>(Self::key(slug))
             .await?
             .map(|record| serde_json::from_str(&record))
-            .transpose()?;
+            .transpose()?)
+    }
 
-        log::trace!("Retrieved the following data `{:?}` from Redis", record);
+    /** Consume this instance of the [`Record`], and update it's intrinsics to reflect the fact it has been accessed */
+    pub async fn consume(self, conn: &mut redis::aio::Connection) -> crate::Result<()> {
+        let record = Record {
+            /* Register a new access if needed */
+            accesses: self.accesses.map(|count| count - 1),
+            ..self
+        };
 
-        Ok(match record {
-            Some(record) => {
-                let record = Record {
-                    /* Register a new access if needed */
-                    accesses: record.accesses.map(|count| count - 1),
-                    ..record
-                };
-
-                match record.accesses {
-                    Some(0) => {
-                        log::trace!("Record has no accesses left, removing");
-                        record.delete(&mut *conn).await?
-                    }
-                    Some(count) => {
-                        log::trace!("Record has `{}` accesses left, pushing change", count);
-                        record.push(&mut *conn).await?
-                    }
-                    None => (),
-                };
-
-                Some(record)
+        match record.accesses {
+            Some(0) => {
+                log::trace!("Record has no accesses left, removing");
+                record.delete(&mut *conn).await?
             }
-            _ => None,
-        })
+            Some(count) => {
+                log::trace!("Record has `{}` accesses left, pushing change", count);
+                record.persist(&mut *conn).await?
+            }
+            None => (),
+        };
+
+        Ok(())
     }
 
     /** Checks for the existence of a [`Record`] from it's `slug` in the server */

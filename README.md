@@ -18,7 +18,9 @@ SHare and shoRTen, simple file, paste &amp; url sharing service
 - [ ] Delete token in return headers, allowing deletion of a record
 - [ ] Add the full path when returning the URL
 
-- [ ] Reliability — Fix race conditions and use redis transactions
+- [ ] Reliability
+    - [x] Fix race conditions on files
+    - [ ] Use redis transactions if relevant
 
 ## Setup
 

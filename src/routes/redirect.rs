@@ -26,7 +26,7 @@ pub async fn create<'r>(
     let record = Record::redirect(
         rocket::http::uri::Absolute::parse_owned(url)
             .map_err(|err| Error::RedirectCreation(err.to_string()))?,
-        slug.clone(),
+        slug,
         settings.accesses(),
         settings.expiry(),
     );
@@ -34,14 +34,14 @@ pub async fn create<'r>(
     log::debug!("Received a new redirect creation {:?}", record);
 
     /* Finally try to push the record */
-    record.push(&mut conn).await?;
+    record.persist(&mut conn).await?;
 
     log::debug!(
         "Successfully persisted the redirect with the slug `{}`",
-        slug
+        record.slug()
     );
 
     Ok(CreatedResponse(
-        uri!(_, super::get(slug = slug)).to_string(),
+        uri!(_, super::get(slug = record.slug())).to_string(),
     ))
 }

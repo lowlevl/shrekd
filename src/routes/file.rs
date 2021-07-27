@@ -28,7 +28,7 @@ pub async fn create<'r>(
     let record = Record::file(
         storage.clone(),
         size as usize,
-        slug.clone(),
+        slug,
         settings.accesses(),
         settings.expiry(),
     );
@@ -37,11 +37,14 @@ pub async fn create<'r>(
 
     /* Finally try to persist this file, and push the record */
     file.persist_to(storage).await?;
-    record.push(&mut conn).await?;
+    record.persist(&mut conn).await?;
 
-    log::debug!("Successfully persisted the file with the slug `{}`", slug);
+    log::debug!(
+        "Successfully persisted the file with the slug `{}`",
+        record.slug()
+    );
 
     Ok(CreatedResponse(
-        uri!(_, super::get(slug = slug)).to_string(),
+        uri!(_, super::get(slug = record.slug())).to_string(),
     ))
 }
