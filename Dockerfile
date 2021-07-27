@@ -1,10 +1,8 @@
 # Start the `builder` image with the desired rustc version
-FROM rustlang/rust:nightly-slim as builder
+FROM jdrouet/rust-nightly as builder
 
 WORKDIR /usr/src
 ARG NAME="shrt"
-
-RUN env
 
 # Prepare the image for static linking
 RUN apt-get update \
