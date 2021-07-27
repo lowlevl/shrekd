@@ -5,7 +5,7 @@ ARG RUST_VERSION="nightly-2021-07-27"
 ARG PROJECT="shrt"
 
 # Install the rust toolchain manager and gcc
-RUN apk add --no-cache rustup gcc
+RUN apk add --no-cache rustup gcc libc-dev
 
 # Install the desired rust toolchain
 RUN rustup-init -y \
