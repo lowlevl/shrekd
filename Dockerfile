@@ -14,7 +14,7 @@ RUN rustup-init -y \
     --profile minimal
 
 # Use cargo's installation
-ENV PATH=${PATH}:$HOME/.cargo/bin
+ENV PATH="${HOME}/.cargo/bin:${PATH}"
 
 RUN env
 
