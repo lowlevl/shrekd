@@ -11,7 +11,8 @@ RUN apk add --no-cache rustup
 RUN rustup-init -y \
     --default-host "$(uname -m)-unknown-linux-musl" \
     --default-toolchain "${RUST_VERSION}" \
-    --profile minimal
+    --profile minimal \
+        && source $HOME/.cargo/env
 
 # Create the application workspace and go inside it
 WORKDIR /build
