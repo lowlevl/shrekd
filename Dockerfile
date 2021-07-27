@@ -4,6 +4,8 @@ FROM rustlang/rust:nightly-slim as builder
 WORKDIR /usr/src
 ARG NAME="shrt"
 
+RUN env
+
 # Prepare the image for static linking
 RUN apt-get update \
     && apt-get dist-upgrade -y \
