@@ -32,5 +32,5 @@ jobs:
           platforms: linux/amd64 #,linux/arm64
           push: ${{ github.ref == 'ref/heads/main' }}
           tags: unwire/shrtd:latest
-          cache-from: type=gha
-          cache-to: type=gha
+          # cache-from: type=gha
+          # cache-to: type=gha
