@@ -1,18 +1,22 @@
-# Start the `builder` image with the desired rustc version
-FROM jdrouet/rust-nightly as builder
+# Start the `builder` image from alpine
+FROM alpine as builder
 
-WORKDIR /usr/src
-ARG NAME="shrt"
+ARG RUST_VERSION="nightly-2021-07-27"
+ARG PROJECT="shrt"
 
-# Prepare the image for static linking
-RUN apt-get update \
-    && apt-get dist-upgrade -y \
-    && apt-get install -y musl-tools \
-    && rustup target add "$(uname -m)-unknown-linux-musl"
+# Install the rust toolchain manager
+RUN apk add --no-cache rustup
 
-# Create the application workspace
-RUN USER=root cargo new application
-WORKDIR /usr/src/application
+# Install the desired rust toolchain
+RUN rustup-init -y \
+    --default-host "$(uname -m)-unknown-linux-musl" \
+    --default-toolchain "${RUST_VERSION}" \
+    --profile minimal
+
+# Create the application workspace and go inside it
+WORKDIR /build
+RUN cargo new application
+WORKDIR /build/application
 
 # Download and compile Rust dependencies (and store as a separate Docker layer)
 COPY Cargo.toml Cargo.lock ./
@@ -24,13 +28,13 @@ RUN touch src/main.rs \
     && cargo install --target "$(uname -m)-unknown-linux-musl" --path .
 
 # Copy the executable to a known place
-RUN cp /usr/local/cargo/bin/${NAME} ./built
+RUN cp /usr/local/cargo/bin/${PROJECT} ./built
 
 # Create an empty Docker image
 FROM scratch
 
 # Copy built binary from the builder
-COPY --from=builder /usr/src/application/built /app
+COPY --from=builder /build/application/built /app
 
 EXPOSE 8000
 USER 1000
