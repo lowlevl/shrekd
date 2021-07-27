@@ -5,6 +5,7 @@ on:
     branches:
       - 'develop'
       - 'main'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,8 +25,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          platforms: linux/amd64 #,linux/arm64
+          platforms: linux/amd64,linux/arm64
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: unwire/shrtd:latest
-          # cache-from: type=gha
-          # cache-to: type=gha
+          cache-from: type=registry,ref=unwire/shrtd:latest
+          cache-to: type=inline
