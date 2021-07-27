@@ -4,8 +4,8 @@ FROM alpine as builder
 ARG RUST_VERSION="nightly-2021-07-27"
 ARG PROJECT="shrt"
 
-# Install the rust toolchain manager
-RUN apk add --no-cache rustup
+# Install the rust toolchain manager and gcc
+RUN apk add --no-cache rustup gcc
 
 # Install the desired rust toolchain
 RUN rustup-init -y \
