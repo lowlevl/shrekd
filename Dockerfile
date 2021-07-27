@@ -5,7 +5,7 @@ WORKDIR /usr/src
 ARG NAME="shrt"
 
 # Compute the $PLATFORM variable from the running architechture
-RUN export PLATFORM="$(uname -m)-unknown-linux-musl"
+ENV PLATFORM="$(uname -m)-unknown-linux-musl"
 
 # Prepare the image for static linking
 RUN apt-get update \
