@@ -16,6 +16,8 @@ RUN rustup-init -y \
 # Use cargo's installation
 ENV PATH=${PATH}:$HOME/.cargo/bin
 
+RUN env
+
 # Create the application workspace and go inside it
 WORKDIR /build
 RUN cargo new application
