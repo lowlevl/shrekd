@@ -2,7 +2,7 @@
 FROM alpine as builder
 
 ARG RUST_VERSION="nightly-2021-07-27"
-ARG PROJECT="shrt"
+ARG PROJECT="shrtd"
 
 # Install the rust toolchain manager and gcc
 RUN apk add --no-cache rustup gcc libc-dev
@@ -31,7 +31,7 @@ RUN touch src/main.rs \
     && cargo install --target "$(uname -m)-unknown-linux-musl" --path .
 
 # Copy the executable to a known place
-RUN cp /usr/local/cargo/bin/${PROJECT} ./built
+RUN cp /root/.cargo/bin/${PROJECT} ./built
 
 # Create an empty Docker image
 FROM scratch
