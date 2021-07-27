@@ -170,7 +170,6 @@ impl Record {
 }
 
 /** Represents a record's data, or a link to it */
-#[allow(clippy::large_enum_variant)]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum RecordData {
     /** Represents a stored file, see [`Record`] */

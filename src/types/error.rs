@@ -1,7 +1,6 @@
 use thiserror::Error;
 
 /** Represent's an application's error */
-#[allow(clippy::large_enum_variant)]
 #[derive(Error, Debug)]
 pub enum Error {
     /* 4xx errors */

@@ -2,6 +2,7 @@
  * # shrt
  * SHare and shoRTen, simple file & url sharing service.
  */
+#![allow(clippy::large_enum_variant)] /* <- This allows for storing the `rocket::response::Redirect` type inside enums, because these are HUGE */
 
 use figment::Figment;
 use simplelog::{ColorChoice, Config as SimpleLogConfig, LevelFilter, TermLogger, TerminalMode};
