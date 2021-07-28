@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   shrtd:
-    build: .
+    image: unwire/shrtd
     environment:
       SHRTD_REDIS_URL: "redis://redis:6379"
     tmpfs: ["/tmp"]
