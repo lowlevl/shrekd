@@ -17,7 +17,7 @@ SHare and shoRTen Daemon, simple file, paste &amp; url sharing daemon
 - [ ] Retention curve depending on the weight, with expiration in return headers
 - [ ] Delete token in return headers, allowing deletion of a record
 - [ ] Add the full path when returning the URL
-
+- [ ] Add a homepage to the project to `/`
 - [ ] Reliability
     - [x] Fix race conditions on files
     - [ ] Use redis transactions if relevant
@@ -36,16 +36,13 @@ Once this is the case, you can run `shrtd` with:
 $ docker-compose up -d
 ```
 
-By default, it will run on port 8000 and store data in `/tmp`, but you can use these variables to change the defaults:
-- `SHRTD_DATADIR` // Datadir's path (default /tmp)
-- `SHRTD_PORT`    // Port exposed (default 8000).
-
 You can also modify the options of SHRTD with environment variable configuration by
 editing the environment section of the shrtd service.
 
 ## Contributors
 
 - Léon ROUX <Nurrl@users.github.com>
+- Olivier Moreau <m-242@users.github.com>
 
 ## License
 
