@@ -4,8 +4,7 @@ services:
     build: .
     environment:
       SHRTD_REDIS_URL: "redis://redis:6379"
-    volumes:
-      - "${SHRTD_DATADIR:-/tmp}:/tmp"
+    tmpfs: ["/tmp"]
     ports:
       - "0.0.0.0:${SHRTD_PORT:-8000}:8000"
     depends_on:
