@@ -1,17 +1,23 @@
 version: "3.8"
+
+volumes:
+  # Service's data storage volume
+  shrtd-data:
+
+
 services:
   shrtd:
-    image: unwire/shrtd
+    image: unwire/shrtd:latest
     environment:
       SHRTD_ADDRESS: "0.0.0.0"
       SHRTD_PORT: "8000" # Beware, edit the ports section of the service too
       SHRTD_REDIS_URL: "redis://redis:6379"
-      SHRTD_DATA_DIR: "/tmp/shrtd"
-      SHRTD_TMP_DIR: "/tmp"
+      SHRTD_DATA_DIR: "/data" # Beware, edit the volumes section of the service too
       SHRTD_SLUG_LENGTH: 13
       SHRTD_MAX_FILE_SIZE: 128
       SHRTD_MAX_PASTE_SIZE: 1
-    tmpfs: ["/tmp"]
+    volumes:
+      - "shrtd-data:/data"
     ports:
       - "0.0.0.0:8000:8000"
     depends_on:

@@ -2,6 +2,10 @@ use figment::{Figment, Metadata, Profile, Provider};
 use rocket::data::ToByteUnit;
 use serde::{Deserialize, Serialize};
 
+use std::path::{PathBuf};
+
+const TEMPDIR_NAME: &str = ".temporary";
+
 /** Global configuration structure */
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Config {
@@ -13,9 +17,7 @@ pub struct Config {
     /** Redis server URL */
     pub redis_url: String,
     /** App's permanent data storage directory */
-    pub data_dir: String,
-    /** App's temporary data storage directory */
-    pub tmp_dir: String,
+    pub data_dir: PathBuf,
     /** Random URI's slug length */
     pub slug_length: u8,
 
@@ -31,8 +33,7 @@ impl Default for Config {
             address: String::from("0.0.0.0"),
             port: 8000,
             redis_url: String::from("redis://127.0.0.1:6379"),
-            data_dir: String::from("/tmp/shrtd"),
-            tmp_dir: String::from("/tmp"),
+            data_dir: PathBuf::from("/tmp/.shrtd"),
             slug_length: 13,
             max_file_size: 128.megabytes().into(),
             max_paste_size: 1.megabytes().into(),
@@ -49,6 +50,11 @@ impl Config {
     /** Extract figment configuration from the environment */
     pub fn figment() -> Figment {
         Figment::from(Config::default()).merge(figment::providers::Env::prefixed("SHRTD_"))
+    }
+
+    /** Compute and get the temporary file path */
+    pub fn temp(&self) -> PathBuf {
+        self.data_dir.join(TEMPDIR_NAME)
     }
 }
 

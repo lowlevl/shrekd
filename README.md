@@ -18,6 +18,7 @@ SHare and shoRTen Daemon, simple file, paste &amp; url sharing daemon
 - [ ] Delete token in return headers, allowing deletion of a record
 - [ ] Add the full path when returning the URL
 - [ ] Add a homepage to the project to `/`
+- [ ] Clean orphaned files at startup, if relevant and safe
 - [ ] Reliability
     - [x] Fix race conditions on files
     - [ ] Use redis transactions if relevant

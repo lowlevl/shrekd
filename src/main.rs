@@ -30,18 +30,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     .expect("Failed to initialize the logger");
 
     log::info!(
-        "Creating the temporary ({}) & permanent ({}) data directories",
-        config.tmp_dir,
-        config.data_dir
+        "Creating the permanent ({:?}) & temporary ({:?}) data directories",
+        config.data_dir,
+        config.temp(),
     );
 
     /* Initialize the directories needed for data storage */
-    fs::create_dir_all(&config.tmp_dir)
-        .await
-        .expect("Failed to create the temporary data directory");
     fs::create_dir_all(&config.data_dir)
         .await
         .expect("Failed to create the permanent data directory");
+    fs::create_dir_all(&config.temp())
+        .await
+        .expect("Failed to create the temporary data directory");
 
     /* Instanciate the Redis client */
     let redis = redis::Client::open(config.redis_url.as_str())
@@ -131,7 +131,7 @@ fn rocket(config: Config, redis: redis::Client) -> rocket::Rocket<rocket::Build>
         Figment::from(rocket::Config::default())
             .merge(("address", &config.address))
             .merge(("port", &config.port))
-            .merge(("temp_dir", &config.tmp_dir))
+            .merge(("temp_dir", &config.temp()))
             .merge(("limits.file", &config.max_file_size))
             .merge(("limits.bytes", &config.max_paste_size)),
     )
