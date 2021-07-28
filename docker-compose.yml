@@ -3,10 +3,17 @@ services:
   shrtd:
     image: unwire/shrtd
     environment:
+      SHRTD_ADDRESS: "0.0.0.0"
+      SHRTD_PORT: "8000" # Beware, edit the ports section of the service too
       SHRTD_REDIS_URL: "redis://redis:6379"
+      SHRTD_DATA_DIR: "/tmp/shrtd"
+      SHRTD_TMP_DIR: "/tmp"
+      SHRTD_SLUG_LENGTH: 13
+      SHRTD_MAX_FILE_SIZE: 128
+      SHRTD_MAX_PASTE_SIZE: 1
     tmpfs: ["/tmp"]
     ports:
-      - "0.0.0.0:${SHRTD_PORT:-8000}:8000"
+      - "0.0.0.0:8000:8000"
     depends_on:
       redis:
         condition: service_healthy
