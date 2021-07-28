@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  shrtd:
+    build: .
+    environment:
+      SHRTD_REDIS_URL: "redis://redis:6379"
+    volumes:
+      - "${SHRTD_DATADIR:-/tmp/data}:/tmp"
+    ports:
+      - "0.0.0.0:${SHRTD_PORT:-8000}:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+  redis:
+      image: redis:6.2.3
+      healthcheck:
+        test: ["CMD", "redis-cli", "ping"]
+        interval: 1s
+        timeout: 3s
+        retries: 30
