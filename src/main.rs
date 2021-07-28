@@ -43,6 +43,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await
         .expect("Failed to create the temporary data directory");
 
+    log::info!("Initializing the Redis client with {}", config.redis_url);
+
     /* Instanciate the Redis client */
     let redis = redis::Client::open(config.redis_url.as_str())
         .expect("Failed to initialize the Redis client");
