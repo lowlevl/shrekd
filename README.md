@@ -1,5 +1,5 @@
-# shrt
-SHare and shoRTen, simple file, paste &amp; url sharing service
+# shrtd
+SHare and shoRTen Daemon, simple file, paste &amp; url sharing daemon
 
 *Notice: This is still in early development and is not intended for production use right now.*
 
