@@ -10,18 +10,20 @@ SHare and shoRTen Daemon, simple file, paste &amp; url sharing daemon
     - [x] Expiry date of the Record & Record detention duration
     - [x] Maximum download count
     - [ ] Input Checksum verification
+    - [ ] Password-protected Records
 - [x] File upload (**POST** `/file` *with streamed input*)
 - [x] Redirect creation (**POST** `/redirect`)
 - [x] Paste creation (**POST** `/paste`)
 - [x] Getting record (**GET** `/<slug>`)
+- [ ] Add a homepage to the project to **GET** `/`
 - [ ] Retention curve depending on the weight, with expiration in return headers
 - [ ] Delete token in return headers, allowing deletion of a record
 - [ ] Add the full path when returning the URL
-- [ ] Add a homepage to the project to `/`
 - [ ] Clean orphaned files at startup, if relevant and safe
 - [ ] Reliability
     - [x] Fix race conditions on files
     - [ ] Use redis transactions if relevant
+- [ ] Server-side file encryption
 
 ## Setup
 
