@@ -2,7 +2,7 @@ use figment::{Figment, Metadata, Profile, Provider};
 use rocket::data::ToByteUnit;
 use serde::{Deserialize, Serialize};
 
-use std::path::{PathBuf};
+use std::path::PathBuf;
 
 const TEMPDIR_NAME: &str = ".temporary";
 

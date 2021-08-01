@@ -45,6 +45,6 @@ pub async fn create<'r>(
     );
 
     Ok(CreatedResponse(
-        uri!(_, super::get(slug = record.slug())).to_string(),
+        uri!(_, super::get::get(slug = record.slug())).to_string(),
     ))
 }
