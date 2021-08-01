@@ -1,5 +1,2 @@
-./target/
-./Dockerfile
-./README.md
-./LICENSE
-./.git
+target/
+.git
