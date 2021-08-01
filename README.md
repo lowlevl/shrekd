@@ -1,4 +1,4 @@
-# shrekd
+# shrekd [![CI](https://github.com/Nurrl/shrekd/actions/workflows/ci.yml/badge.svg)](https://github.com/Nurrl/shrekd/actions/workflows/ci.yml)
 SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
 
 *Notice: This is still in early development and is not intended for production use right now.*
