@@ -1,6 +1,6 @@
 /*!
- * # shrtd
- * SHare and shoRTen Daemon, simple file & url sharing service.
+ * # shrekd
+ * SHaRe, SHoRten oK Daemon, simple file, paste & url sharing daemon
  */
 #![allow(clippy::large_enum_variant)] /* <- This allows for storing the `rocket::response::Redirect` type inside enums, because these are HUGE */
 

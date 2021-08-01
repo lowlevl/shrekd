@@ -33,7 +33,7 @@ impl Default for Config {
             address: String::from("0.0.0.0"),
             port: 8000,
             redis_url: String::from("redis://127.0.0.1:6379"),
-            data_dir: PathBuf::from("/tmp/.shrtd"),
+            data_dir: PathBuf::from("/tmp/.shrekd"),
             slug_length: 13,
             max_file_size: 128.megabytes().into(),
             max_paste_size: 1.megabytes().into(),
@@ -49,7 +49,7 @@ impl Config {
 
     /** Extract figment configuration from the environment */
     pub fn figment() -> Figment {
-        Figment::from(Config::default()).merge(figment::providers::Env::prefixed("SHRTD_"))
+        Figment::from(Config::default()).merge(figment::providers::Env::prefixed("SHREKD_"))
     }
 
     /** Compute and get the temporary file path */
@@ -62,7 +62,7 @@ use figment::value::{Dict, Map};
 
 impl Provider for Config {
     fn metadata(&self) -> Metadata {
-        Metadata::named("shrtd Config")
+        Metadata::named("shrekd Config")
     }
 
     fn data(&self) -> figment::error::Result<Map<Profile, Dict>> {

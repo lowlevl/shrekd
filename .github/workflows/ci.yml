@@ -79,7 +79,7 @@ jobs:
       # Identify the project name from the repository name
       PROJECT: ${{ github.event.repository.name }}
       # Set here the docker image name and tag
-      NAME: unwire/shrtd
+      NAME: shrekd/shrekd
       TAG: latest
     steps:
       -

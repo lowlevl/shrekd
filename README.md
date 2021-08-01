@@ -1,5 +1,5 @@
-# shrtd
-SHare and shoRTen Daemon, simple file, paste &amp; url sharing daemon
+# shrekd
+SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
 
 *Notice: This is still in early development and is not intended for production use right now.*
 
@@ -33,14 +33,14 @@ Currently the project requires you to host a **Redis** server locally for it to 
 
 You will need [docker and docker-compose installed](https://docs.docker.com/compose/install/).
 
-Once this is the case, you can run `shrtd` with:
+Once this is the case, you can run `shrekd` with:
 
 ```shell
 $ docker-compose up -d
 ```
 
-You can also modify the options of SHRTD with environment variable configuration by
-editing the environment section of the shrtd service.
+You can also modify the options of SHREKD with environment variable configuration by
+editing the environment section of the `shrekd` service.
 
 ## Contributors
 

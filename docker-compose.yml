@@ -2,22 +2,22 @@ version: "3.8"
 
 volumes:
   # Service's data storage volume
-  shrtd-data:
+  shrekd-data:
 
 
 services:
-  shrtd:
-    image: unwire/shrtd:latest
+  shrekd:
+    image: shrekd/shrekd:latest
     environment:
-      SHRTD_ADDRESS: "0.0.0.0"
-      SHRTD_PORT: "8000" # Beware, edit the ports section of the service too
-      SHRTD_REDIS_URL: "redis://redis:6379"
-      SHRTD_DATA_DIR: "/data" # Beware, edit the volumes section of the service too
-      SHRTD_SLUG_LENGTH: 13
-      SHRTD_MAX_FILE_SIZE: 128
-      SHRTD_MAX_PASTE_SIZE: 1
+      SHREKD_ADDRESS: "0.0.0.0"
+      SHREKD_PORT: "8000" # Beware, edit the ports section of the service too
+      SHREKD_REDIS_URL: "redis://redis:6379"
+      SHREKD_DATA_DIR: "/data" # Beware, edit the volumes section of the service too
+      SHREKD_SLUG_LENGTH: 13
+      SHREKD_MAX_FILE_SIZE: 128
+      SHREKD_MAX_PASTE_SIZE: 1
     volumes:
-      - "shrtd-data:/data"
+      - "shrekd-data:/data"
     ports:
       - "0.0.0.0:8000:8000"
     depends_on:
