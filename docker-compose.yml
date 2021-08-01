@@ -14,8 +14,8 @@ services:
       SHREKD_REDIS_URL: "redis://redis:6379"
       SHREKD_DATA_DIR: "/data" # Beware, edit the volumes section of the service too
       SHREKD_SLUG_LENGTH: 13
-      SHREKD_MAX_FILE_SIZE: 128
-      SHREKD_MAX_PASTE_SIZE: 1
+      SHREKD_MAX_FILE_SIZE: 128000000 # 128 MB
+      SHREKD_MAX_PASTE_SIZE: 1000000 # 1 MB
     volumes:
       - "shrekd-data:/data"
     ports:
