@@ -23,6 +23,8 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
 - [ ] Reliability
     - [x] Fix race conditions on files
     - [ ] Use redis transactions if relevant
+    - [ ] Setup CI for tag/release deployment
+    - [ ] Setup CI for `cargo audit`, `cargo test`, `cargo clippy`
 - [ ] Server-side file encryption
 
 ## Setup
