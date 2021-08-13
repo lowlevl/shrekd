@@ -5,6 +5,9 @@
     :root {
         --bg-color: #272727;
         --fg-color: #eeeeee;
+
+        --alt-bg-color: #202020;
+        --alt-fg-color: #e9e9e9;
     }
 }
 
@@ -12,12 +15,32 @@
     :root {
         --bg-color: #eeeeee;
         --fg-color: #272727;
+
+        --alt-bg-color: #e9e9e9;
+        --alt-fg-color: #202020;
     }
 }
 
-html, body {
+* {
     font-family: 'Roboto Mono', monospace;
+    font-size: 15px;
 
     background: var(--bg-color);
-    color: var(--fg-color)
+    color: var(--fg-color);
+}
+
+body {
+    display: block;
+    word-wrap: normal;
+}
+
+code {
+    background: var(--alt-bg-color);
+    color: var(--alt-fg-color);
+
+    margin: 2px 0;
+    padding: 2px 4px;
+    border-radius: 4px;
+
+    display: inline-block;
 }

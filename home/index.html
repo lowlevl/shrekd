@@ -8,14 +8,102 @@
   <title>shrekd::hello</title>
   <meta name="description" content="shrekd's server homepage">
 
-  <!-- <link rel="icon" href="/favicon.svg" type="image/svg+xml"> -->
+  <!-- <link rel="icon" href="static/favicon.svg" type="image/svg+xml"> -->
   <link rel="stylesheet" href="static/main.css">
 </head>
 
 <body>
-  Lorem ipsum
+<pre>
+  ██████  ██░ ██  ██▀███  ▓█████  ██ ▄█▀▓█████▄
+▒██    ▒ ▓██░ ██▒▓██ ▒ ██▒▓█   ▀  ██▄█▒ ▒██▀ ██▌
+░ ▓██▄   ▒██▀▀██░▓██ ░▄█ ▒▒███   ▓███▄░ ░██   █▌
+  ▒   ██▒░▓█ ░██ ▒██▀▀█▄  ▒▓█  ▄ ▓██ █▄ ░▓█▄   ▌
+▒██████▒▒░▓█▒░██▓░██▓ ▒██▒░▒████▒▒██▒ █▄░▒████▓
+▒ ▒▓▒ ▒ ░ ▒ ░░▒░▒░ ▒▓ ░▒▓░░░ ▒░ ░▒ ▒▒ ▓▒ ▒▒▓  ▒
+░ ░▒  ░ ░ ▒ ░▒░ ░  ░▒ ░ ▒░ ░ ░  ░░ ░▒ ▒░ ░ ▒  ▒
+░  ░  ░   ░  ░░ ░  ░░   ░    ░   ░ ░░ ░  ░ ░  ░
+      ░   ░  ░  ░   ░        ░  ░░  ░      ░
+                                         ░
+             ~ service to share data via links.
+</pre>
 
-  <!-- <script src="js/scripts.js"></script> -->
+<pre>
+It stores <b>records</b>, which are little pieces of data
+to a <b>Redis</b> server and <i>sometimes</i> linked to a <b>local file</b>.
+There are <i>three</i> types of records that can be pushed,
+<b>files</b>, <b>pastes</b> and <b>urls</b>.
+</pre>
+
+<pre>
+The currently set-up size limits are,
+   file = <b>...</b>
+  paste = <b>...</b>
+    url = <b>...</b>
+</pre>
+
+<pre>
+┏━━━━━━━━━━━━━━━━━┓
+╏  File records   ╏
+┗━━━━━━━━━━━━━━━━━┛
+<i>Work in progress</i>
+</pre>
+
+<pre>
+┏━━━━━━━━━━━━━━━━━┓
+╏  Paste records  ╏
+┗━━━━━━━━━━━━━━━━━┛
+<i>Work in progress</i>
+</pre>
+
+<pre>
+┏━━━━━━━━━━━━━━━━━┓
+╏   Url records   ╏
+┗━━━━━━━━━━━━━━━━━┛
+<i>Work in progress</i>
+</pre>
+
+<hr />
+
+<pre>
+User-configurable headers while pushing a record to the server are,
+
+    <u><b>Max-Access:</b></u>
+      The number times your record can be accessed
+      before it is <i>permanently*</i> removed.
+
+    <u><b>Expiry-Timestamp:</b></u>
+      The absolute <b>UTC</b> unix timetamp at which your record will
+      not be accessible and expire <i>permanently*</i>. (with respect to
+      Redis's automatic garbage collection delays)
+
+      NOTE: Incompatible with <b>Expire-In</b>.
+
+    <u><b>Expire-In:</b></u>
+      The time in seconds in which your record will not be accessible
+      and expire <i>permanently*</i>. (with respect to Redis's automatic
+      garbage collection delays)
+
+      NOTE: Incompatible with <b>Expiry-Timestamp</b>.
+
+    <u><b>Slug-Length:</b></u>
+      The random slug's length that will be generated when using
+      random slugs or when falling back when using <b>Custom-Slug</b>.
+
+      NOTE: The final slug length respects the following rule:
+      <code>final-length = max(default-length, your-length)</code>.
+
+    <u><b>Custom-Slug:</b></u>
+      The choosen slug for your record, if available, otherwise it will
+      fallback to the random-generated one.
+
+    <u><b>Data-Checksum:</b></u>
+      <i>NOT IMPLEMENTED RIGHT NOW :shrug:</i>
+
+* <i>A NOTE ON SECURITY: If the disk is not encrypted, or the person
+  operating the server is malicious, your files may get stolen. </i>
+</pre>
+
+  <!-- <script src="static/scripts.js"></script> -->
 </body>
 
 </html>
