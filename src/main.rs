@@ -8,8 +8,10 @@ use figment::Figment;
 use simplelog::{ColorChoice, Config as SimpleLogConfig, LevelFilter, TermLogger, TerminalMode};
 use tokio::fs;
 
+mod api;
+mod home;
+
 mod config;
-mod routes;
 mod types;
 
 pub use config::Config;
@@ -137,8 +139,10 @@ fn rocket(config: Config, redis: redis::Client) -> rocket::Rocket<rocket::Build>
             .merge(("limits.file", &config.max_file_size))
             .merge(("limits.bytes", &config.max_paste_size)),
     )
-    /* Mount `/` routes */
-    .mount("/", routes::mounts())
+    /* Mount `/` ::home routes */
+    .mount("/", home::routes())
+    /* Mount `/` ::api routes */
+    .mount("/", api::routes())
     /* Attach a redis client to the rocket instance */
     .manage(redis)
     /* Attach the config to the rocket instance */

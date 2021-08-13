@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #272727;
+        --fg-color: #eeeeee;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --bg-color: #eeeeee;
+        --fg-color: #272727;
+    }
+}
+
+html, body {
+    font-family: 'Roboto Mono', monospace;
+
+    background: var(--bg-color);
+    color: var(--fg-color)
+}
