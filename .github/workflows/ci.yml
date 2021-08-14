@@ -48,7 +48,7 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --release --target=${{ matrix.target.triple }}
+          args: --release --all-features --target=${{ matrix.target.triple }}
       -
         name: Setup artifact for upload
         run: |
@@ -67,10 +67,46 @@ jobs:
           name: ${{ matrix.target.triple }}
           path: artifacts/*
 
+  tests:
+    name: Test & Lint
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout the repository
+        uses: actions/checkout@v2
+      -
+        name: Cache for `cargo` and compiled files
+        uses: actions/cache@v2
+        with:
+          path: |
+            /usr/share/rust/.cargo
+            ./target
+          key: ${{ github.ref }}-tests
+      -
+        name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: clippy
+      -
+        name: Test the project
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --release --all-features
+      -
+        name: Lint the project
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --release --all-features
+
   deploy:
     name: Deploy image on Docker Hub
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, tests]
     if: ${{ github.ref == 'refs/heads/main' }} # Deploy only on the `main` branch
     env:
       # Enable the use of `docker manifest` and docker BuildKit
