@@ -7,7 +7,7 @@ use crate::types::{Record, RecordData};
 pub enum RecordResponse {
     #[response(content_type = "binary")]
     File(rocket::tokio::fs::File),
-    Redirect(rocket::response::Redirect),
+    Url(rocket::response::Redirect),
     #[response(content_type = "text/plain")]
     Paste(String),
 }
@@ -28,8 +28,8 @@ pub async fn get<'r>(
     /* Transform the record's data into the suited response */
     let response = match record.data() {
         RecordData::File { path, .. } => RecordResponse::File(fs::File::open(path).await?),
-        RecordData::Redirect { to } => {
-            RecordResponse::Redirect(rocket::response::Redirect::to(to.clone()))
+        RecordData::Url { target } => {
+            RecordResponse::Url(rocket::response::Redirect::to(target.clone()))
         }
         RecordData::Paste { body } => RecordResponse::Paste(body.clone()),
     };

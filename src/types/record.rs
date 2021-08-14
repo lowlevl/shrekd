@@ -27,7 +27,7 @@ impl std::fmt::Debug for Record {
             RecordData::File { path, size } => {
                 write!(f, "Record::File<{:?}, {}>", path, ByteUnit::from(*size))
             }
-            RecordData::Redirect { to } => write!(f, "Record::Redirect<{}>", to),
+            RecordData::Url { target } => write!(f, "Record::Url<{}>", target),
             RecordData::Paste { body } => write!(f, "Record::Paste<{} chars>", body.len()),
         }?;
 
@@ -71,15 +71,15 @@ impl Record {
         }
     }
 
-    /** Instanciate a new `Redirect`-variant record */
-    pub fn redirect(
+    /** Instanciate a new `Url`-variant record */
+    pub fn url(
         url: rocket::http::uri::Absolute<'static>,
         slug: String,
         accesses: Option<u16>,
         expiry: Option<DateTime<Utc>>,
     ) -> Self {
         Record {
-            data: RecordData::Redirect { to: url },
+            data: RecordData::Url { target: url },
             slug,
             accesses,
             expiry,
@@ -173,18 +173,13 @@ impl Record {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum RecordData {
     /** Represents a stored file, see [`Record`] */
-    File {
-        path: PathBuf,
-        size: usize,
-    },
+    File { path: PathBuf, size: usize },
     /** Represents a URL redirect, see [`Record`] */
-    Redirect {
-        to: rocket::http::uri::Absolute<'static>,
+    Url {
+        target: rocket::http::uri::Absolute<'static>,
     },
-    /* Represents a paste in utf-8, see [`Record`] */
-    Paste {
-        body: String,
-    },
+    /** Represents a paste in utf-8, see [`Record`] */
+    Paste { body: String },
 }
 
 /** Structure representing parameters regarding the configuration of [`Record`]s */

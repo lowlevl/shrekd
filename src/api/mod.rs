@@ -3,11 +3,11 @@ use rocket::{routes, Responder};
 mod file;
 mod get;
 mod paste;
-mod redirect;
+mod url;
 
 pub fn routes() -> Vec<rocket::Route> {
     /*! Return the list of `/` ::api routes */
-    routes![file::create, paste::create, redirect::create, get::get]
+    routes![file::create, paste::create, url::create, get::get]
 }
 
 #[derive(Responder)]

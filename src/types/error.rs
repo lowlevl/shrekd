@@ -13,8 +13,8 @@ pub enum Error {
     #[error("Paste creation failed ({0})")]
     PasteCreation(String),
 
-    #[error("Redirect creation failed ({0})")]
-    RedirectCreation(String),
+    #[error("Url record creation failed ({0})")]
+    UrlCreation(String),
 
     /* 5xx errors */
     #[error("There's an error with the configuration ({0})")]
@@ -46,7 +46,7 @@ impl<'r, 'o: 'r> rocket::response::Responder<'r, 'o> for Error {
         Ok(match self {
             /* 4xx errors */
             Error::NotFound(_) => status::NotFound(error).respond_to(req)?,
-            Error::FileUpload(_) | Error::PasteCreation(_) | Error::RedirectCreation(_) => {
+            Error::FileUpload(_) | Error::PasteCreation(_) | Error::UrlCreation(_) => {
                 status::Custom(Status::UnprocessableEntity, error).respond_to(req)?
             }
 

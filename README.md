@@ -12,7 +12,7 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
     - [ ] Input Checksum verification
     - [ ] Password-protected Records
 - [x] File upload (**POST** `/file` *with streamed input*)
-- [x] Redirect creation (**POST** `/redirect`)
+- [x] Url redirect creation (**POST** `/url`)
 - [x] Paste creation (**POST** `/paste`)
 - [x] Getting record (**GET** `/<slug>`)
 - [ ] Add a homepage to the project to **GET** `/`
