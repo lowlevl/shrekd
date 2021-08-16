@@ -103,10 +103,44 @@ jobs:
           command: clippy
           args: --release --all-features
 
+  audit:
+    name: Audit dependencies
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout the repository
+        uses: actions/checkout@v2
+      -
+        name: Cache for `cargo` and compiled files
+        uses: actions/cache@v2
+        with:
+          path: |
+            /usr/share/rust/.cargo
+            ./target
+          key: ${{ github.ref }}-audit
+      -
+        name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      -
+        name: Install cargo-audit
+        uses: actions-rs/install@v0.1
+        with:
+          crate: cargo-audit
+          use-tool-cache: true
+      -
+        name: Audit the project
+        uses: actions-rs/cargo@v1
+        with:
+          command: audit
+
   deploy:
     name: Deploy image on Docker Hub
     runs-on: ubuntu-latest
-    needs: [build, tests]
+    needs: [build, tests, audit]
     if: ${{ github.ref == 'refs/heads/main' }} # Deploy only on the `main` branch
     env:
       # Enable the use of `docker manifest` and docker BuildKit
