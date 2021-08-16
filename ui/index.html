@@ -35,11 +35,18 @@ There are <i>three</i> types of records that can be pushed,
 </pre>
 
 <pre>
-The currently set-up size limits are,
-   file = <b>...</b>
-  paste = <b>...</b>
-    url = <b>...</b>
+The service is currently exposed as <code>{{ base }}</code>.
+The current service version is <code>v{{ version }}</code>.
 </pre>
+
+<pre>
+The currently set-up size limits are,
+   file = <b>{{ limits.file }}</b>
+  paste = <b>{{ limits.paste }}</b>
+    url = <b>{{ limits.url }}</b>
+</pre>
+
+<br />
 
 <pre>
 ┏━━━━━━━━━━━━━━━━━┓
@@ -62,7 +69,7 @@ The currently set-up size limits are,
 <i>Work in progress</i>
 </pre>
 
-<hr />
+<br />
 
 <pre>
 User-configurable headers while pushing a record to the server are,

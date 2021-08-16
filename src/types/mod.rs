@@ -17,10 +17,10 @@ use rocket::{
 };
 
 /** Get the `Host` header from the [`Request`] and wrap it */
-pub struct HostRef<'o>(pub uri::Reference<'o>);
+pub struct HostBase<'r>(pub uri::Reference<'r>);
 
 #[rocket::async_trait]
-impl<'r> FromRequest<'r> for HostRef<'r> {
+impl<'r> FromRequest<'r> for HostBase<'r> {
     type Error = ();
 
     async fn from_request(request: &'r Request<'_>) -> rocket::request::Outcome<Self, Self::Error> {
@@ -50,11 +50,18 @@ impl<'r> FromRequest<'r> for HostRef<'r> {
     }
 }
 
-impl HostRef<'_> {
-    /** Computes the Absolute path from the [`HostRef`] and the `path` */
+impl HostBase<'_> {
+    /** Computes the Absolute path from the [`HostBase`] and the `path` */
     pub fn with(&self, path: uri::Origin<'_>) -> uri::Absolute<'_> {
         Absolute::parse_owned(format!("{}{}", self.0, path))
             .unwrap()
             .into_normalized()
+    }
+
+    /** Retrieve the inner [`uri::Reference`] from the [`HostBase`] */
+    pub fn into_inner(self) -> uri::Reference<'static> {
+        use rocket::http::ext::IntoOwned;
+
+        self.0.into_owned()
     }
 }

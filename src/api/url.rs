@@ -3,14 +3,14 @@ use rocket::{post, response::Responder, uri, State};
 use super::CreatedResponse;
 use crate::{
     config::Config,
-    types::{HostRef, Record, RecordSettings},
+    types::{HostBase, Record, RecordSettings},
     Error, Result,
 };
 
 #[post("/url", data = "<data>")]
 pub async fn create<'r>(
     data: Result<String, std::io::Error>,
-    host: HostRef<'_>,
+    host: HostBase<'_>,
     settings: RecordSettings,
     config: &State<Config>,
     redis: &State<redis::Client>,

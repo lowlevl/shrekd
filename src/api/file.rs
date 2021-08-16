@@ -4,14 +4,14 @@ use tokio::fs;
 use super::CreatedResponse;
 use crate::{
     config::Config,
-    types::{HostRef, Record, RecordSettings},
+    types::{HostBase, Record, RecordSettings},
     Error, Result,
 };
 
 #[post("/file", data = "<file>")]
 pub async fn create<'r>(
     file: Result<TempFile<'_>, std::io::Error>,
-    host: HostRef<'_>,
+    host: HostBase<'_>,
     settings: RecordSettings,
     config: &State<Config>,
     redis: &State<redis::Client>,

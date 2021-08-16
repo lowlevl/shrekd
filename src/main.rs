@@ -9,7 +9,7 @@ use simplelog::{ColorChoice, Config as SimpleLogConfig, LevelFilter, TermLogger,
 use tokio::fs;
 
 mod api;
-mod home;
+mod ui;
 
 mod config;
 mod types;
@@ -131,20 +131,22 @@ async fn cleanup(config: Config, redis: redis::Client) -> crate::Result<()> {
 
 fn rocket(config: Config, redis: redis::Client) -> rocket::Rocket<rocket::Build> {
     /*! Configure the [`Rocket`] from the [`Config`] structure, and attach everything */
-    rocket::custom(
+    let rocket = rocket::custom(
         Figment::from(rocket::Config::default())
             .merge(("address", &config.address))
             .merge(("port", &config.port))
             .merge(("temp_dir", &config.temp()))
             .merge(("limits.file", &config.max_file_size))
-            .merge(("limits.bytes", &config.max_paste_size)),
+            .merge(("limits.bytes", &config.max_paste_size))
+            .merge(("limits.string", &config.max_url_size)),
     )
-    /* Mount `/` ::home routes */
-    .mount("/", home::routes())
     /* Mount `/` ::api routes */
     .mount("/", api::routes())
     /* Attach a redis client to the rocket instance */
     .manage(redis)
     /* Attach the config to the rocket instance */
-    .manage(config)
+    .manage(config);
+
+    /* Attach the UI frontpage to Rocket and return it */
+    ui::attach(rocket)
 }

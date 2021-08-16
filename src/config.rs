@@ -25,6 +25,8 @@ pub struct Config {
     pub max_file_size: u64,
     /** Max paste size */
     pub max_paste_size: u64,
+    /** Max url size */
+    pub max_url_size: u64,
 }
 
 impl Default for Config {
@@ -37,6 +39,7 @@ impl Default for Config {
             slug_length: 13,
             max_file_size: 128.megabytes().into(),
             max_paste_size: 1.megabytes().into(),
+            max_url_size: 32.kilobytes().into(),
         }
     }
 }

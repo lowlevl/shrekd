@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 
-
 @media (prefers-color-scheme: dark) {
     :root {
         --bg-color: #272727;

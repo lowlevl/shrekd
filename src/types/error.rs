@@ -20,6 +20,9 @@ pub enum Error {
     #[error("There's an error with the configuration ({0})")]
     Config(#[from] figment::Error),
 
+    #[error("There was a templating error while generating the UI ({0})")]
+    Templating(#[from] liquid::Error),
+
     #[error("I/O error: {0}")]
     IO(#[from] tokio::io::Error),
 
@@ -52,7 +55,7 @@ impl<'r, 'o: 'r> rocket::response::Responder<'r, 'o> for Error {
 
             /* 5xx errors */
             Error::Redis(_) => status::Custom(Status::ServiceUnavailable, error).respond_to(req)?,
-            Error::Config(_) | Error::IO(_) | Error::SerDe(_) => {
+            Error::Config(_) | Error::IO(_) | Error::SerDe(_) | Error::Templating(_) => {
                 status::Custom(Status::InternalServerError, error).respond_to(req)?
             }
         })
