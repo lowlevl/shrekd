@@ -24,12 +24,12 @@ impl<'r> FromRequest<'r> for HostRef<'r> {
     type Error = ();
 
     async fn from_request(request: &'r Request<'_>) -> rocket::request::Outcome<Self, Self::Error> {
-        const DEFAULT_PROTO: &'static str = "http";
+        const DEFAULT_PROTO: &str = "http";
 
         let hostname = request
             .headers()
             .get_one("X-Forwarded-Host")
-            .or(request.headers().get_one("Host"));
+            .or_else(|| request.headers().get_one("Host"));
         let proto = request
             .headers()
             .get_one("X-Forwarded-Proto")
