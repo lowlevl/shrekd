@@ -15,16 +15,17 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
 - [x] Url redirect creation (**POST** `/url`)
 - [x] Paste creation (**POST** `/paste`)
 - [x] Getting record (**GET** `/<slug>`)
-- [ ] Add a homepage to the project to **GET** `/`
+- [/] Add a homepage to the project to **GET** `/`
 - [ ] Retention curve depending on the weight, with expiration in return headers
 - [ ] Delete token in return headers, allowing deletion of a record
-- [ ] Add the full path when returning the URL
+- [x] Add the full path when returning the URL
 - [ ] Clean orphaned files at startup, if relevant and safe
 - [ ] Reliability
     - [x] Fix race conditions on files
     - [ ] Use redis transactions if relevant
     - [ ] Setup CI for tag/release deployment
-    - [ ] Setup CI for `cargo audit`, `cargo test`, `cargo clippy`
+    - [x] Setup CI for `cargo test`, `cargo clippy`
+    - [ ] Setup CI for `cargo audit`
 - [ ] Server-side file encryption
 
 ## Setup
