@@ -46,33 +46,47 @@ The currently set-up size limits are,
     url = <b>{{ limits.url }}</b>
 </pre>
 
-<br />
+<hr style="height: 50%; visibility: hidden;" />
 
 <pre>
-┏━━━━━━━━━━━━━━━━━┓
-╏  File records   ╏
-┗━━━━━━━━━━━━━━━━━┛
-<i>Work in progress</i>
+* <b>File upload</b> :: <code><b>PUT</b> /&lt;filename&gt;</code>
+  with a directly-<b>streamed content</b> in the <b>request body</b>.
 </pre>
 
+<div class="button">
+  <span>[Upload file]</span>
+  <input type="file" class="upload" id="file-upload-input" />
+</div>
+<div id="file-upload-output-outer" style="display: none;">
+  ⤷ <code id="file-upload-output" class="select-all"></code>
+</div>
+
+<hr style="height: 50%; visibility: hidden;" />
+
 <pre>
-┏━━━━━━━━━━━━━━━━━┓
-╏  Paste records  ╏
-┗━━━━━━━━━━━━━━━━━┛
-<i>Work in progress</i>
+* <b>Paste storage</b> :: <code><b>POST</b> /paste</code>
+  with a directly-<b>streamed content</b> in the <b>request body</b>.
 </pre>
 
+<div class="button">
+  <span>[Store paste :: WIP]</span>
+</div>
+
+<hr style="height: 50%; visibility: hidden;" />
+
 <pre>
-┏━━━━━━━━━━━━━━━━━┓
-╏   Url records   ╏
-┗━━━━━━━━━━━━━━━━━┛
-<i>Work in progress</i>
+* <b>Url redirect</b> :: <code><b>POST</b> /url</code>
+  <i>Work in progress.</i>
 </pre>
 
-<br />
+<div class="button">
+  <span>[Create redirect :: WIP]</span>
+</div>
+
+<hr style="height: 50%; visibility: hidden;" />
 
 <pre>
-User-configurable headers while pushing a record to the server are,
+User-configurable headers,
 
     <u><b>Max-Access:</b></u>
       The number times your record can be accessed
@@ -110,7 +124,11 @@ User-configurable headers while pushing a record to the server are,
   operating the server is malicious, your files may get stolen. </i>
 </pre>
 
-  <!-- <script src="static/scripts.js"></script> -->
+  <script
+    src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+    crossorigin="anonymous"></script>
+  <script src="static/main.js"></script>
 </body>
 
 </html>

@@ -7,6 +7,9 @@
 
         --alt-bg-color: #202020;
         --alt-fg-color: #e9e9e9;
+
+        --ok-text: #4e9a06;
+        --ko-text: #cc0000;
     }
 }
 
@@ -15,31 +18,68 @@
         --bg-color: #eeeeee;
         --fg-color: #272727;
 
-        --alt-bg-color: #e9e9e9;
+        --alt-bg-color: #b3b3b3;
         --alt-fg-color: #202020;
+
+        --ok-text: #4f8964;
+        --ko-text: #cc0000;
     }
 }
 
 * {
     font-family: 'Roboto Mono', monospace;
     font-size: 15px;
-
-    background: var(--bg-color);
-    color: var(--fg-color);
 }
 
 body {
     display: block;
     word-wrap: normal;
+
+    background: var(--bg-color);
+    color: var(--fg-color);
 }
 
 code {
     background: var(--alt-bg-color);
     color: var(--alt-fg-color);
 
-    margin: 2px 0;
-    padding: 2px 4px;
+    margin: 0;
+    padding: 0 4px;
     border-radius: 4px;
 
     display: inline-block;
+}
+
+.select-all {
+    user-select: all;
+}
+
+.button {
+    position: relative;
+    display: inline-block;
+
+    /* cursor: pointer !important; — FIXME: Non-working */
+}
+
+.button:hover {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+}
+
+.button input.upload {
+    position: absolute;
+
+    width: 100%; height: 100%;
+    margin: 0; padding: 0;
+    top: 0; right: 0;
+
+    opacity: 0;
+}
+
+.status-ok {
+    color: var(--ok-text);
+}
+
+.status-ko {
+    color: var(--ko-text);
 }

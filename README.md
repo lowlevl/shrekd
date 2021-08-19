@@ -11,7 +11,7 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
     - [x] Maximum download count
     - [ ] Input Checksum verification
     - [ ] Password-protected Records
-- [x] File upload (**POST** `/file` *with streamed form binary file*)
+- [x] File upload (**PUT** `/<filename>` *with streamed binary content*)
 - [x] Paste creation (**POST** `/paste`, *with streamed utf-8 content*)
 - [x] Url redirect creation (**POST** `/url`)
 - [x] Getting record (**GET** `/<slug>`)

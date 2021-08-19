@@ -1,10 +1,4 @@
-use rocket::{
-    form::{self, Form},
-    fs::TempFile,
-    post,
-    response::Responder,
-    uri, State,
-};
+use rocket::{fs::TempFile, put, response::Responder, uri, State};
 use tokio::fs;
 
 use super::CreatedResponse;
@@ -14,20 +8,16 @@ use crate::{
     Error, Result,
 };
 
-#[post("/file", data = "<file>")]
+#[put("/<filename>", data = "<file>")]
 pub async fn create<'r>(
-    file: Result<Form<TempFile<'_>>, form::Errors<'_>>,
+    filename: String,
+    file: Result<TempFile<'_>, std::io::Error>,
     host: HostBase<'_>,
     settings: RecordSettings,
     config: &State<Config>,
     redis: &State<redis::Client>,
 ) -> Result<impl Responder<'r, 'static>> {
     let mut file = file.map_err(|err| Error::FileUpload(err.to_string()))?;
-    let filename = file.name().ok_or_else(|| {
-        Error::FileUpload(String::from(
-            "The uploaded file must have filename, received none",
-        ))
-    })?;
 
     let mut conn = redis.get_async_connection().await?;
 
