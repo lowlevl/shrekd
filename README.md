@@ -15,7 +15,13 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
 - [x] Paste creation (**POST** `/paste`, *with streamed utf-8 content*)
 - [x] Url redirect creation (**POST** `/url`)
 - [x] Getting record (**GET** `/<slug>`)
-- [/] Add a homepage to the project to **GET** `/`
+- [ ] Add a UI to the project on **GET** `/`
+    - [x] Make a dark/light mode compatible UI
+    - [x] Get file creation working
+    - [ ] Get paste creation working
+    - [ ] Get url creation working
+    - [ ] Get user parameters working with the above
+    - [ ] Try to make a JS-free UI
 - [x] Retain `file` records filenames and restore it at download
 - [ ] Retention curve depending on the weight, with expiration in return headers
 - [ ] Delete token in return headers, allowing deletion of a record
@@ -24,9 +30,10 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
 - [ ] Reliability
     - [x] Fix race conditions on files
     - [ ] Use redis transactions if relevant
-    - [ ] Setup CI for tag/release deployment
     - [x] Setup CI for `cargo test`, `cargo clippy`
     - [x] Setup CI for `cargo audit`
+    - [ ] Take care of random slug collision
+- [ ] Setup CI for tag/release deployment
 - [ ] Server-side file encryption
 
 ## Setup
