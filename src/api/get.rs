@@ -1,4 +1,4 @@
-use rocket::{get, response::Responder, State};
+use rocket::{get, http::Header, response::Responder, State};
 use tokio::fs;
 
 use crate::types::{Record, RecordData};
@@ -6,7 +6,7 @@ use crate::types::{Record, RecordData};
 #[derive(Debug, Responder)]
 pub enum RecordResponse {
     #[response(content_type = "binary")]
-    File(rocket::tokio::fs::File),
+    File(rocket::tokio::fs::File, Header<'static>),
     Url(rocket::response::Redirect),
     #[response(content_type = "text/plain")]
     Paste(String),
@@ -27,7 +27,13 @@ pub async fn get<'r>(
 
     /* Transform the record's data into the suited response */
     let response = match record.data() {
-        RecordData::File { path, .. } => RecordResponse::File(fs::File::open(path).await?),
+        RecordData::File { path, name, .. } => RecordResponse::File(
+            fs::File::open(path).await?,
+            Header::new(
+                "Content-Disposition",
+                format!("attachment; filename={}", name),
+            ),
+        ),
         RecordData::Url { target } => {
             RecordResponse::Url(rocket::response::Redirect::to(target.clone()))
         }

@@ -35,7 +35,11 @@ impl<'r> FromRequest<'r> for HostBase<'r> {
             .get_one("X-Forwarded-Proto")
             .unwrap_or(DEFAULT_PROTO);
 
-        println!("{:?}, {:?}", hostname, proto);
+        log::trace!(
+            "Received the following hostname `{:?}` and protocol `{}`",
+            hostname,
+            proto
+        );
 
         match hostname
             .map(|hostname| uri::Authority::parse(hostname))

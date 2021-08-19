@@ -24,8 +24,14 @@ pub struct Record {
 impl std::fmt::Debug for Record {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self.data {
-            RecordData::File { path, size } => {
-                write!(f, "Record::File<{:?}, {}>", path, ByteUnit::from(*size))
+            RecordData::File { name, path, size } => {
+                write!(
+                    f,
+                    "Record::File<{}, {:?}, {}>",
+                    name,
+                    path,
+                    ByteUnit::from(*size)
+                )
             }
             RecordData::Url { target } => write!(f, "Record::Url<{}>", target),
             RecordData::Paste { body } => write!(f, "Record::Paste<{} chars>", body.len()),
@@ -42,6 +48,7 @@ impl std::fmt::Debug for Record {
 impl Record {
     /** Instanciate a new `File`-variant record */
     pub fn file(
+        name: String,
         path: PathBuf,
         size: usize,
         slug: String,
@@ -49,7 +56,7 @@ impl Record {
         expiry: Option<DateTime<Utc>>,
     ) -> Self {
         Record {
-            data: RecordData::File { path, size },
+            data: RecordData::File { name, path, size },
             slug,
             accesses,
             expiry,
@@ -173,7 +180,11 @@ impl Record {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum RecordData {
     /** Represents a stored file, see [`Record`] */
-    File { path: PathBuf, size: usize },
+    File {
+        name: String,
+        path: PathBuf,
+        size: usize,
+    },
     /** Represents a URL redirect, see [`Record`] */
     Url {
         target: rocket::http::uri::Absolute<'static>,

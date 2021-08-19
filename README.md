@@ -11,11 +11,12 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
     - [x] Maximum download count
     - [ ] Input Checksum verification
     - [ ] Password-protected Records
-- [x] File upload (**POST** `/file` *with streamed input*)
+- [x] File upload (**POST** `/file` *with streamed form binary file*)
+- [x] Paste creation (**POST** `/paste`, *with streamed utf-8 content*)
 - [x] Url redirect creation (**POST** `/url`)
-- [x] Paste creation (**POST** `/paste`)
 - [x] Getting record (**GET** `/<slug>`)
 - [/] Add a homepage to the project to **GET** `/`
+- [x] Retain `file` records filenames and restore it at download
 - [ ] Retention curve depending on the weight, with expiration in return headers
 - [ ] Delete token in return headers, allowing deletion of a record
 - [x] Add the full path when returning the URL
