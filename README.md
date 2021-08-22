@@ -19,7 +19,7 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
     - [x] Make a dark/light mode compatible UI
     - [x] Get file creation working
     - [x] Get paste creation working
-    - [ ] Get url creation working
+    - [x] Get url creation working
     - [ ] Get user parameters working with the above
     - [ ] Try to make a JS-free UI
 - [x] Retain `file` records filenames and restore it at download

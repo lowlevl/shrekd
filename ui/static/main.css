@@ -66,6 +66,10 @@ code {
     text-decoration-style: dotted;
 }
 
+.output {
+    display: inline-block;
+}
+
 input#file-upload-input {
     position: absolute;
 
@@ -83,6 +87,23 @@ textarea#paste-creation-input {
     display: block;
 
     border: 0;
+    width: 54ch;
+    height: 12em;
+
+    padding: 4px;
+    border-radius: 4px;
+}
+
+input#redirect-creation-input {
+    background: var(--alt-bg-color);
+    color: var(--alt-fg-color);
+
+    display: block;
+
+    border: 0;
+    width: 54ch;
+
+    padding: 4px;
     border-radius: 4px;
 }
 

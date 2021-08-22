@@ -53,15 +53,15 @@ The currently set-up size limits are,
   with a directly-<b>streamed content</b> in the <b>request body</b>.
 </pre>
 
-<div class="button">
-  <span><b>[Upload file]</b></span>
+<a class="button">
+  <b>[Upload file]</b>
   <input type="file" id="file-upload-input" />
-</div>
-<div id="file-upload-output-outer" style="display: none;">
+</a>
+<br />
+<div id="file-upload-output-outer" class="output" style="display: none;">
   ⤷ <code id="file-upload-output" class="select-all"></code>
 </div>
 
-<br />
 <br />
 
 <pre>
@@ -69,30 +69,35 @@ The currently set-up size limits are,
   with a directly-<b>streamed content</b> in the <b>request body</b>.
 </pre>
 
-<textarea cols="54" rows="6" id="paste-creation-input"></textarea>
-<div class="button" id="paste-creation-button">
-  <span><b>[Store paste]</b></span>
-</div>
-<div id="paste-creation-output-outer" style="display: none;">
+<textarea id="paste-creation-input" placeholder="Paste your snippet here..."></textarea>
+<a class="button" id="paste-creation-button">
+  <b>[Store paste]</b>
+</a>
+<br />
+<div id="paste-creation-output-outer" class="output" style="display: none;">
   ⤷ <code id="paste-creation-output" class="select-all"></code>
 </div>
 
 <br />
-<br />
 
 <pre>
 * <b>Url redirect</b> :: <code><b>POST</b> /url</code>
-  <i>Work in progress.</i>
+  with a directly-<b>streamed content</b> in the <b>request body</b>.
 </pre>
 
-<div class="button">
-  <span><b>[Create redirect :: WIP]</b></span>
+<input type="text" id="redirect-creation-input" placeholder="Enter the target url here..." />
+<a class="button" id="redirect-creation-button">
+  <b>[Create redirect]</b>
+</a>
+<br />
+<div id="redirect-creation-output-outer" class="output" style="display: none;">
+  ⤷ <code id="redirect-creation-output" class="select-all"></code>
 </div>
 
 <hr style="height: 50%; visibility: hidden;" />
 
 <pre>
-User-configurable headers,
+User-configurable headers:
 
     <u><b>Max-Access:</b></u>
       The number times your record can be accessed

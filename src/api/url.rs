@@ -17,6 +17,26 @@ pub async fn create<'r>(
 ) -> Result<impl Responder<'r, 'static>> {
     /* If the url data is malformed return an error */
     let url = data.map_err(|err| Error::UrlCreation(err.to_string()))?;
+    let url = rocket::http::uri::Absolute::parse_owned(url)
+        .map_err(|err| Error::UrlCreation(err.to_string()))?;
+
+    /* If the scheme is not `http` or `https`, throw an Err */
+    if url.scheme() != "http" && url.scheme() != "https" {
+        return Err(Error::UrlCreation(
+            "The only authorized schemes are `http` and `https`".to_string(),
+        ));
+    }
+
+    /* If the authority is not present, or has no host, throw an Err */
+    if url
+        .authority()
+        .map(|authority| authority.host().is_empty())
+        .unwrap_or(true)
+    {
+        return Err(Error::UrlCreation(
+            "The url must contain at least a scheme and an authority".to_string(),
+        ));
+    }
 
     let mut conn = redis.get_async_connection().await?;
 
@@ -24,13 +44,7 @@ pub async fn create<'r>(
     let slug = settings.slug(config, &mut conn).await?;
 
     /* Instanciate a new record from it */
-    let record = Record::url(
-        rocket::http::uri::Absolute::parse_owned(url)
-            .map_err(|err| Error::UrlCreation(err.to_string()))?,
-        slug,
-        settings.accesses(),
-        settings.expiry(),
-    );
+    let record = Record::url(url, slug, settings.accesses(), settings.expiry());
 
     log::debug!("Received a new url creation {:?}", record);
 
