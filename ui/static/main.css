@@ -81,7 +81,9 @@ textarea#paste-creation-input {
     color: var(--alt-fg-color);
 
     display: block;
+
     border: 0;
+    border-radius: 4px;
 }
 
 .status-ok {

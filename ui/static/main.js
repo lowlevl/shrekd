@@ -1,8 +1,9 @@
 $(() => {
 
     $("#file-upload-input").change(function (event) {
-        $("#file-upload-output-outer").hide();
         let file = $(this).prop("files")[0];
+
+        $("#file-upload-output-outer").hide();
 
         $.ajax({
             url: `/${encodeURIComponent(file.name)}`,
@@ -35,8 +36,14 @@ $(() => {
     });
 
     $("#paste-creation-button").click(function (event) {
-        $("#paste-creation-output-outer").hide();
         let snippet = $("#paste-creation-input").val();
+
+        if (!snippet) {
+            event.preventDefault();
+            return;
+        }
+
+        $("#paste-creation-output-outer").hide();
 
         $.ajax({
             url: "/paste",
