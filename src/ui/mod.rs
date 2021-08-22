@@ -1,7 +1,7 @@
 use crate::{types::HostBase, Config};
 use rocket::{
     data::ByteUnit,
-    fs::{relative, FileServer},
+    fs::FileServer,
     get,
     response::{content, Responder},
     routes, State,
@@ -34,5 +34,5 @@ pub fn attach(rocket: rocket::Rocket<rocket::Build>) -> rocket::Rocket<rocket::B
         /* Attach the template-generated frontpage UI */
         .mount("/", routes![index])
         /* Attach the `/static` routes from the `static` directory */
-        .mount("/static", FileServer::from(relative!("ui/static")))
+        .mount("/static", FileServer::from("./ui/static"))
 }
