@@ -34,7 +34,7 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
     - [x] Setup CI for `cargo audit`
     - [ ] Take care of random slug collision
 - [ ] Setup CI for tag/release deployment
-- [ ] Fix CI caching keys with `key` and `restore-keys`, cf. https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#example-using-the-cache-action
+- [x] Fix CI caching keys with `key` and `restore-keys`, cf. https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#example-using-the-cache-action
 - [ ] Server-side file encryption
 
 ## Setup

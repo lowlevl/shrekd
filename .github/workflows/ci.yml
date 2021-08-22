@@ -27,13 +27,23 @@ jobs:
         name: Checkout the repository
         uses: actions/checkout@v2
       -
-        name: Cache for `cargo` and compiled files
+        name: Cache for cargo-related files
         uses: actions/cache@v2
         with:
           path: |
             /usr/share/rust/.cargo
+          key: ${{ matrix.target.triple }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ matrix.target.triple }}-cargo-
+      -
+        name: Cache for compiled files
+        uses: actions/cache@v2
+        with:
+          path: |
             ./target
-          key: ${{ github.ref }}-${{ matrix.target.triple }}
+          key: ${{ matrix.target.triple }}-build-${{ hashFiles('**/*.rs') }}
+          restore-keys: |
+            ${{ matrix.target.triple }}-build-
       -
         name: Install toolchain for `${{ matrix.target.triple }}`
         uses: actions-rs/toolchain@v1
@@ -75,13 +85,23 @@ jobs:
         name: Checkout the repository
         uses: actions/checkout@v2
       -
-        name: Cache for `cargo` and compiled files
+        name: Cache for cargo-related files
         uses: actions/cache@v2
         with:
           path: |
             /usr/share/rust/.cargo
+          key: tests-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            tests-cargo-
+      -
+        name: Cache for compiled files
+        uses: actions/cache@v2
+        with:
+          path: |
             ./target
-          key: ${{ github.ref }}-tests
+          key: tests-build-${{ hashFiles('**/*.rs') }}
+          restore-keys: |
+            tests-build-
       -
         name: Install toolchain
         uses: actions-rs/toolchain@v1
@@ -111,13 +131,14 @@ jobs:
         name: Checkout the repository
         uses: actions/checkout@v2
       -
-        name: Cache for `cargo` and compiled files
+        name: Cache for cargo-related files
         uses: actions/cache@v2
         with:
           path: |
             /usr/share/rust/.cargo
-            ./target
-          key: ${{ github.ref }}-audit
+          key: audit-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            audit-cargo-
       -
         name: Install toolchain
         uses: actions-rs/toolchain@v1
