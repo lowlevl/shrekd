@@ -30,4 +30,34 @@ $(() => {
         });
     });
 
+    $("#paste-creation-button").click(function (event) {
+        $("#paste-creation-output-outer").hide();
+        let snippet = $("#paste-creation-input").val();
+
+        $.ajax({
+            url: "/paste",
+            type: "POST",
+            data: snippet,
+            processData: false,
+            contentType: false,
+        })
+        .catch((req, _, error) => {
+            console.error(`Paste creation failed because of ${req.status} ${error} !`);
+            console.error(req, error);
+
+            $("#paste-creation-output").text(error);
+            $("#paste-creation-output").removeClass("status-ok");
+            $("#paste-creation-output").addClass("status-ko");
+            $("#paste-creation-output-outer").show();
+        })
+        .then((data, _, req) => {
+            console.log(`Paste creation succeeded with a status of ${req.status} !`);
+
+            $("#paste-creation-output").text(data);
+            $("#paste-creation-output").removeClass("status-ko");
+            $("#paste-creation-output").addClass("status-ok");
+            $("#paste-creation-output-outer").show();
+        });
+    });
+
 });

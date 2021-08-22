@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>shrekd::hello</title>
+  <title>shrekd::ui</title>
   <meta name="description" content="shrekd's server homepage">
 
   <!-- <link rel="icon" href="static/favicon.svg" type="image/svg+xml"> -->
@@ -55,7 +55,7 @@ The currently set-up size limits are,
 
 <div class="button">
   <span>[Upload file]</span>
-  <input type="file" class="upload" id="file-upload-input" />
+  <input type="file" id="file-upload-input" />
 </div>
 <div id="file-upload-output-outer" style="display: none;">
   ⤷ <code id="file-upload-output" class="select-all"></code>
@@ -68,8 +68,12 @@ The currently set-up size limits are,
   with a directly-<b>streamed content</b> in the <b>request body</b>.
 </pre>
 
-<div class="button">
-  <span>[Store paste :: WIP]</span>
+<textarea cols="54" rows="1" id="paste-creation-input"></textarea>
+<div class="button" id="paste-creation-button">
+  <span>[Store paste]</span>
+</div>
+<div id="paste-creation-output-outer" style="display: none;">
+  ⤷ <code id="paste-creation-output" class="select-all"></code>
 </div>
 
 <hr style="height: 50%; visibility: hidden;" />

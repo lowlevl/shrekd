@@ -18,7 +18,7 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
 - [ ] Add a UI to the project on **GET** `/`
     - [x] Make a dark/light mode compatible UI
     - [x] Get file creation working
-    - [ ] Get paste creation working
+    - [x] Get paste creation working
     - [ ] Get url creation working
     - [ ] Get user parameters working with the above
     - [ ] Try to make a JS-free UI
@@ -34,6 +34,7 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
     - [x] Setup CI for `cargo audit`
     - [ ] Take care of random slug collision
 - [ ] Setup CI for tag/release deployment
+- [ ] Fix CI caching keys with `key` and `restore-keys`, cf. https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#example-using-the-cache-action
 - [ ] Server-side file encryption
 
 ## Setup
