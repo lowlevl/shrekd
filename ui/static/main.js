@@ -15,7 +15,7 @@ $(() => {
             console.error(`File upload failed because of ${req.status} ${error} !`);
             console.error(req, error);
 
-            $("#file-upload-output").text(error);
+            $("#file-upload-output").text(req.responseJSON.message);
             $("#file-upload-output").removeClass("status-ok");
             $("#file-upload-output").addClass("status-ko");
             $("#file-upload-output-outer").show();
@@ -45,7 +45,7 @@ $(() => {
             console.error(`Paste creation failed because of ${req.status} ${error} !`);
             console.error(req, error);
 
-            $("#paste-creation-output").text(error);
+            $("#paste-creation-output").text(req.responseJSON.message);
             $("#paste-creation-output").removeClass("status-ok");
             $("#paste-creation-output").addClass("status-ko");
             $("#paste-creation-output-outer").show();
