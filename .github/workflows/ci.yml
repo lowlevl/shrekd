@@ -32,7 +32,7 @@ jobs:
         with:
           path: |
             /usr/share/rust/.cargo
-          key: ${{ matrix.target.triple }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ matrix.target.triple }}-cargo-${{ hashFiles('**/Cargo.lock', '/usr/share/rust/.cargo/.crates.toml') }}
           restore-keys: |
             ${{ matrix.target.triple }}-cargo-
       -
@@ -90,7 +90,7 @@ jobs:
         with:
           path: |
             /usr/share/rust/.cargo
-          key: tests-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: tests-cargo-${{ hashFiles('**/Cargo.lock', '/usr/share/rust/.cargo/.crates.toml') }}
           restore-keys: |
             tests-cargo-
       -
@@ -136,7 +136,7 @@ jobs:
         with:
           path: |
             /usr/share/rust/.cargo
-          key: audit-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: audit-cargo-${{ hashFiles('**/Cargo.lock', '/usr/share/rust/.cargo/.crates.toml') }}
           restore-keys: |
             audit-cargo-
       -
