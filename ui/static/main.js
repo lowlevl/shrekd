@@ -15,7 +15,11 @@ $(() => {
             console.error(`File upload failed because of ${req.status} ${error} !`);
             console.error(req, error);
 
-            $("#file-upload-output").text(req.responseJSON.message);
+            if (req.status == 0) {
+                $("#file-upload-output").text("A network error occured or the size limit has been reached");
+            } else {
+                $("#file-upload-output").text(req.responseJSON.message);
+            }
             $("#file-upload-output").removeClass("status-ok");
             $("#file-upload-output").addClass("status-ko");
             $("#file-upload-output-outer").show();
@@ -45,7 +49,11 @@ $(() => {
             console.error(`Paste creation failed because of ${req.status} ${error} !`);
             console.error(req, error);
 
-            $("#paste-creation-output").text(req.responseJSON.message);
+            if (req.status == 0) {
+                $("#paste-creation-output").text("A network error occured");
+            } else {
+                $("#paste-creation-output").text(req.responseJSON.message);
+            }
             $("#paste-creation-output").removeClass("status-ok");
             $("#paste-creation-output").addClass("status-ko");
             $("#paste-creation-output-outer").show();
