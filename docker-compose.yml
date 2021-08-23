@@ -7,7 +7,7 @@ volumes:
 
 services:
   shrekd:
-    image: shrekd/shrekd:latest
+    image: shrekd/shrekd:0.1
     environment:
       SHREKD_ADDRESS: "0.0.0.0"
       SHREKD_PORT: "8000" # Beware, edit the ports section of the service too
