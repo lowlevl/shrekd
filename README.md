@@ -4,38 +4,45 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
 *Notice: This is still in early development and is not intended for production use right now.*
 
 ## Task list
-- [ ] User-programmable configuration:
-    - [x] Custom Slug, best effort
-    - [x] Slug length, minimum of sever-configured Slug
-    - [x] Expiry date of the Record & Record detention duration
-    - [x] Maximum download count
-    - [ ] Input Checksum verification
-    - [ ] Password-protected Records
-- [x] File upload (**PUT** `/<filename>` *with streamed binary content*)
-- [x] Paste creation (**POST** `/paste`, *with streamed utf-8 content*)
-- [x] Url redirect creation (**POST** `/url`)
-- [x] Getting record (**GET** `/<slug>`)
-- [ ] Add a UI to the project on **GET** `/`
-    - [x] Make a dark/light mode compatible UI
-    - [x] Get file creation working
-    - [x] Get paste creation working
-    - [x] Get url creation working
-    - [ ] Get user parameters working with the above
-    - [ ] Try to make a JS-free UI
-- [x] Retain `file` records filenames and restore it at download
-- [ ] Retention curve depending on the weight, with expiration in return headers
-- [ ] Delete token in return headers, allowing deletion of a record
-- [x] Add the full path when returning the URL
-- [ ] Clean orphaned files at startup, if relevant and safe
-- [ ] Reliability
+- [x] Basic functionnality:
+    - [x] File upload (**PUT** `/<filename>` *with streamed binary content*)
+    - [x] Paste creation (**POST** `/paste`, *with streamed utf-8 content*)
+    - [x] Url redirect creation (**POST** `/url` *with streamed url*)
+    - [x] Getting record (**GET** `/<slug>`)
+- [ ] Nice to have:
+    - [x] Retain `file` records filenames and restore it at download
+    - [x] Add the full path when returning the URL
+    - [x] CI:
+        - [x] Setup CI for `cargo test`, `cargo clippy`
+        - [x] Setup CI for `cargo audit`
+        - [x] Setup CI for tag/release deployment
+        - [x] Fix CI caching keys with `key` and `restore-keys`, cf. https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#example-using-the-cache-action
+    - [ ] UI on **GET** `/`:
+        - [x] Make a dark/light mode compatible UI
+        - [x] Get file creation working
+        - [x] Get paste creation working
+        - [x] Get url creation working
+        - [ ] Get user parameters working with the above
+        - [ ] Try to make a JS-free UI
+    - [ ] User-programmable configuration:
+        - [x] Custom Slug, best effort
+        - [x] Slug length, minimum of sever-configured Slug
+        - [x] Expiry date of the Record & Record detention duration
+        - [x] Maximum download count
+        - [ ] Input Checksum verification
+        - [ ] Password-protected Records
+    - [ ] Retention curve depending on the weight, with expiration in return headers
+    - [ ] Delete token in return headers, allowing *effort-less* deletion of a record
+- [ ] Abuse prevention:
+    - [ ] Log input IP addresses in the record
+    - [ ] Set up some kind of rate limiting by IP
+- [ ] Reliability & Performance:
     - [x] Fix race conditions on files
-    - [ ] Use redis transactions if relevant
-    - [x] Setup CI for `cargo test`, `cargo clippy`
-    - [x] Setup CI for `cargo audit`
+    - [ ] Serialize and deserialize data as binary, not JSON
     - [ ] Take care of random slug collision
-- [x] Setup CI for tag/release deployment
-- [x] Fix CI caching keys with `key` and `restore-keys`, cf. https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#example-using-the-cache-action
-- [ ] Server-side file encryption
+    - [ ] Server-side file encryption
+    - [ ] Use redis transactions if relevant
+    - [ ] Clean orphaned files at startup, if relevant and safe
 
 ## Setup
 
