@@ -8,7 +8,7 @@ pub enum RecordResponse {
     #[response(content_type = "binary")]
     File(rocket::tokio::fs::File, Header<'static>),
     Url(rocket::response::Redirect),
-    #[response(content_type = "text/plain")]
+    #[response(content_type = "text/plain;charset=utf-8")]
     Paste(String),
 }
 
