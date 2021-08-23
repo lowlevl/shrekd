@@ -2,6 +2,8 @@ name: CI
 
 on:
   push:
+    tags:
+      - '*'
     branches:
       - 'develop'
       - 'main'
@@ -162,7 +164,7 @@ jobs:
     name: Deploy image on Docker Hub
     runs-on: ubuntu-latest
     needs: [build, tests, audit]
-    if: ${{ github.ref == 'refs/heads/main' }} # Deploy only on the `main` branch
+    if: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') }} # Deploy only on the `main` branch or tags
     env:
       # Enable the use of `docker manifest` and docker BuildKit
       DOCKER_CLI_EXPERIMENTAL: enabled
@@ -171,7 +173,6 @@ jobs:
       PROJECT: ${{ github.event.repository.name }}
       # Set here the docker image name and tag
       NAME: shrekd/shrekd
-      TAG: latest
     steps:
       -
         name: Download artifacts
@@ -183,12 +184,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Create and Push the Docker images for each platform
+        name: Create the image for each platform
         run: |
           # For each target arch, build the image, with the specified arch
           for path in */; do
             PLATFORM="$(cat ${path}/os)/$(cat ${path}/arch)"
-            IMAGE="${NAME}:${TAG}-$(cat ${path}/arch)"
+            IMAGE="${NAME}:latest-$(cat ${path}/arch)"
 
             docker build --platform "${PLATFORM}" --tag "${IMAGE}" "${path}"
             docker push "${IMAGE}"
@@ -198,9 +199,20 @@ jobs:
             echo "Successfully built and pushed the image with the following tag '${IMAGE}' for '${PLATFORM}'"
           done
       -
-        name: Merge the manifests and push the image to Docker Hub
+        name: Create the cross-platform images, tag them and push them to the repository
         run: |
-          # Create the cross-platform image
-          docker manifest create "${NAME}:${TAG}" $(cat ./images)
-          # Push it to Docker Hub
-          docker manifest push "${NAME}:${TAG}"
+          # Identify which tags need to deploy according to the ref
+          TAGS=("latest")
+          if [[ "${GITHUB_REF}" =~ ^refs/tags/([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            TAGS+=("${BASH_REMATCH[1]}" "${BASH_REMATCH[1]}.${BASH_REMATCH[2]}" "${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}")
+          fi
+
+          for tag in "${TAGS[@]}"; do
+            IMAGE="${NAME}:${tag}"
+            echo "Tagging and pushing the image '${IMAGE}' to DockerHub"
+
+            # Create the cross-platform image as ${tag}
+            docker manifest create "${IMAGE}" $(cat ./images)
+            # Push it to Docker Hub
+            docker manifest push "${IMAGE}"
+          done
