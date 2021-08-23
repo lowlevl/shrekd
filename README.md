@@ -38,7 +38,7 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
     - [ ] Set up some kind of rate limiting by IP
 - [ ] Reliability & Performance:
     - [x] Fix race conditions on files
-    - [ ] Serialize and deserialize data as binary, not JSON
+    - [x] Serialize and deserialize data as binary, not JSON
     - [ ] Take care of random slug collision
     - [ ] Server-side file encryption
     - [ ] Use redis transactions if relevant

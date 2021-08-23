@@ -112,7 +112,7 @@ impl Record {
         use redis::AsyncCommands;
 
         /* Push the Record into Redis */
-        conn.set(Self::key(&self.slug), serde_json::to_string(self)?)
+        conn.set(Self::key(&self.slug), bincode::serialize(self)?)
             .await?;
 
         if let Some(expiry) = self.expiry {
@@ -139,9 +139,9 @@ impl Record {
         use redis::AsyncCommands;
 
         Ok(conn
-            .get::<_, Option<String>>(Self::key(slug))
+            .get::<_, Option<Vec<u8>>>(Self::key(slug))
             .await?
-            .map(|record| serde_json::from_str(&record))
+            .map(|record| bincode::deserialize(&record))
             .transpose()?)
     }
 

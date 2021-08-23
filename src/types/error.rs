@@ -30,7 +30,7 @@ pub enum Error {
     Redis(#[from] redis::RedisError),
 
     #[error("Serialization or deserialization error ({0})")]
-    SerDe(#[from] serde_json::Error),
+    SerDe(#[from] bincode::Error),
 }
 
 impl<'r, 'o: 'r> rocket::response::Responder<'r, 'o> for Error {
