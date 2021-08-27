@@ -21,13 +21,15 @@ services:
       - "shrekd-data:/data"
     ports:
       - "0.0.0.0:8000:8000"
+    restart: unless-stopped
     depends_on:
       redis:
         condition: service_healthy
   redis:
-      image: redis:6.2.3
-      healthcheck:
-        test: ["CMD", "redis-cli", "ping"]
-        interval: 1s
-        timeout: 3s
-        retries: 30
+    image: redis:6.2.3
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
