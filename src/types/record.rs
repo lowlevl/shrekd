@@ -6,6 +6,8 @@ use rocket::{
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
+use crate::Error;
+
 use super::{Result, STORAGE_PREFIX};
 
 /** Represents a record with it's params and data */
@@ -331,11 +333,20 @@ impl RecordSettings {
                 let length =
                     std::cmp::max(config.slug_length, self.slug_length.unwrap_or_default());
 
-                rand::thread_rng()
+                let slug: String = rand::thread_rng()
                     .sample_iter(&Alphanumeric)
                     .take(length as usize)
                     .map(char::from)
-                    .collect()
+                    .collect();
+
+                // Check if the random generator made a collision
+                if Record::exists(&slug, &mut *conn).await? {
+                    return Err(Error::Intrinsics(
+                        "The randomly-generated slug already exists, this is unexpected",
+                    ));
+                }
+
+                slug
             }
         })
     }

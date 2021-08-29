@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 
 use std::path::PathBuf;
 
+use crate::Result;
+
 const TEMPDIR_NAME: &str = ".temporary";
 
 /** Global configuration structure */
@@ -46,7 +48,7 @@ impl Default for Config {
 
 impl Config {
     /* Allow the configuration to be extracted from any [`Provider`] */
-    pub fn from<T: Provider>(provider: T) -> Result<Self, crate::Error> {
+    pub fn from<T: Provider>(provider: T) -> Result<Self> {
         Ok(Figment::from(provider).extract()?)
     }
 

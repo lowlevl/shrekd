@@ -37,7 +37,7 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
     - [x] Fix race conditions on files
     - [x] Serialize and deserialize data as binary, not JSON
     - [ ] Add unit tests to the project
-    - [ ] Take care of random slug collision
+    - [x] Take care of random slug collision
     - [ ] Server-side file encryption
     - [ ] Use redis transactions if relevant
     - [ ] Clean orphaned files at startup, if relevant and safe

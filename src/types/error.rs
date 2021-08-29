@@ -2,7 +2,7 @@ use thiserror::Error;
 
 /** Represent's an application's error */
 #[derive(Error, Debug)]
-pub enum Error {
+pub enum Error<'s> {
     /* 4xx errors */
     #[error("Couldn't find the record identified with the slug `{0}`")]
     NotFound(String),
@@ -17,6 +17,9 @@ pub enum Error {
     UrlCreation(String),
 
     /* 5xx errors */
+    #[error("There was an infortuate error in the application's logic ({0})")]
+    Intrinsics(&'s str),
+
     #[error("There's an error with the configuration ({0})")]
     Config(#[from] figment::Error),
 
@@ -33,7 +36,7 @@ pub enum Error {
     SerDe(#[from] bincode::Error),
 }
 
-impl<'r, 'o: 'r> rocket::response::Responder<'r, 'o> for Error {
+impl<'r, 'o: 'r> rocket::response::Responder<'r, 'o> for Error<'o> {
     fn respond_to(self, req: &'r rocket::request::Request<'_>) -> rocket::response::Result<'o> {
         use rocket::{http::Status, response::status, serde::json};
         use serde::Serialize;
@@ -55,7 +58,11 @@ impl<'r, 'o: 'r> rocket::response::Responder<'r, 'o> for Error {
 
             /* 5xx errors */
             Error::Redis(_) => status::Custom(Status::ServiceUnavailable, error).respond_to(req)?,
-            Error::Config(_) | Error::IO(_) | Error::SerDe(_) | Error::Templating(_) => {
+            Error::Config(_)
+            | Error::IO(_)
+            | Error::SerDe(_)
+            | Error::Templating(_)
+            | Error::Intrinsics(_) => {
                 status::Custom(Status::InternalServerError, error).respond_to(req)?
             }
         })
@@ -63,4 +70,4 @@ impl<'r, 'o: 'r> rocket::response::Responder<'r, 'o> for Error {
 }
 
 /** Convenience alias of [`std::result::Result`] with the [`Error`] prefilled */
-pub type Result<T, E = Error> = std::result::Result<T, E>;
+pub type Result<T, E = Error<'static>> = std::result::Result<T, E>;
