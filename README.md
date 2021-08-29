@@ -33,9 +33,6 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
         - [ ] Password-protected Records
     - [ ] Retention curve depending on the weight, with expiration in return headers
     - [ ] Delete token in return headers, allowing *effort-less* deletion of a record
-- [ ] Abuse prevention:
-    - [ ] Log input IP addresses in the record
-    - [ ] Set up some kind of rate limiting by IP
 - [ ] Reliability & Performance:
     - [x] Fix race conditions on files
     - [x] Serialize and deserialize data as binary, not JSON
@@ -44,6 +41,13 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
     - [ ] Server-side file encryption
     - [ ] Use redis transactions if relevant
     - [ ] Clean orphaned files at startup, if relevant and safe
+
+## Abandonned task lists
+- [ ] Abuse prevention:
+    - [ ] Log input IP addresses in the record
+    - [ ] Set up some kind of rate limiting by IP
+
+    Can easily be done, with a higher reliability through a reverse proxy
 
 ## Setup
 
