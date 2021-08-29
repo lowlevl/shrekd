@@ -45,7 +45,7 @@ impl<'r> FromRequest<'r> for HostBase<'r> {
     }
 }
 
-impl HostBase<'_> {
+impl<'r> HostBase<'r> {
     /** Computes the Absolute path from the [`HostBase`] and the `path` */
     pub fn with(&self, path: uri::Origin<'_>) -> uri::Absolute<'_> {
         Absolute::parse_owned(format!("{}{}", self.0, path))
@@ -54,9 +54,7 @@ impl HostBase<'_> {
     }
 
     /** Retrieve the inner [`uri::Reference`] from the [`HostBase`] */
-    pub fn into_inner(self) -> uri::Reference<'static> {
-        use rocket::http::ext::IntoOwned;
-
-        self.0.into_owned()
+    pub fn into_inner(self) -> uri::Reference<'r> {
+        self.0
     }
 }
