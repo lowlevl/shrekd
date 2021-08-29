@@ -12,18 +12,13 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
 - [ ] Nice to have:
     - [x] Retain `file` records filenames and restore it at download
     - [x] Add the full path when returning the URL
+    - [ ] Retention curve depending on the weight, with expiration in return headers
+    - [ ] Delete token in return headers, allowing *effort-less* deletion of a record
     - [x] CI:
         - [x] Setup CI for `cargo test`, `cargo clippy`
         - [x] Setup CI for `cargo audit`
         - [x] Setup CI for tag/release deployment
         - [x] Fix CI caching keys with `key` and `restore-keys`, cf. https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows#example-using-the-cache-action
-    - [ ] UI on **GET** `/`:
-        - [x] Make a dark/light mode compatible UI
-        - [x] Get file creation working
-        - [x] Get paste creation working
-        - [x] Get url creation working
-        - [ ] Get user parameters working with the above
-        - [ ] Try to make a JS-free UI
     - [ ] User-programmable configuration:
         - [x] Custom Slug, best effort
         - [x] Slug length, minimum of sever-configured Slug
@@ -31,8 +26,13 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
         - [x] Maximum download count
         - [ ] Input Checksum verification
         - [ ] Password-protected Records
-    - [ ] Retention curve depending on the weight, with expiration in return headers
-    - [ ] Delete token in return headers, allowing *effort-less* deletion of a record
+    - [ ] UI on **GET** `/`:
+        - [x] Make a dark/light mode compatible UI
+        - [x] Get file creation working
+        - [x] Get paste creation working
+        - [x] Get url creation working
+        - [ ] Get user parameters working with the above
+        - [ ] Try to make a JS-free UI
 - [ ] Reliability & Performance:
     - [x] Fix race conditions on files
     - [x] Serialize and deserialize data as binary, not JSON
