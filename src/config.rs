@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use std::path::PathBuf;
 
-use crate::Result;
+use crate::{types::RetentionCurve, Error, Result};
 
 const TEMPDIR_NAME: &str = ".temporary";
 
@@ -29,6 +29,11 @@ pub struct Config {
     pub max_paste_size: u64,
     /** Max url size, in bytes */
     pub max_url_size: u64,
+
+    /** Retention min age, in seconds */
+    pub retention_min_age: u64,
+    /** Retention max age, in seconds */
+    pub retention_max_age: u64,
 }
 
 impl Default for Config {
@@ -42,6 +47,8 @@ impl Default for Config {
             max_file_size: 128.megabytes().into(),
             max_paste_size: 1.megabytes().into(),
             max_url_size: 32.kilobytes().into(),
+            retention_min_age: 60 * 60 * 24 * 7,     /* 1 week */
+            retention_max_age: 60 * 60 * 24 * 7 * 3, /* 3 week */
         }
     }
 }
@@ -63,6 +70,17 @@ impl Config {
     #[inline]
     pub fn temp(&self) -> PathBuf {
         self.data_dir.join(TEMPDIR_NAME)
+    }
+
+    /** Get the [`RetentionCurve`] from the current configuration */
+    #[inline]
+    pub fn curve(&self) -> Result<RetentionCurve> {
+        RetentionCurve::new(
+            self.retention_min_age,
+            self.retention_max_age,
+            self.max_file_size,
+        )
+        .map_err(|err| Error::Intrinsics(err.to_string().into()))
     }
 }
 
