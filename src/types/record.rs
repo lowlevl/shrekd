@@ -49,7 +49,8 @@ impl std::fmt::Debug for Record {
 
 impl Record {
     /** Instanciate a new `File`-variant record */
-    pub fn file(
+    #[inline]
+    pub const fn file(
         name: String,
         path: PathBuf,
         size: usize,
@@ -66,7 +67,8 @@ impl Record {
     }
 
     /** Instanciate a new `Paste`-variant record */
-    pub fn paste(
+    #[inline]
+    pub const fn paste(
         data: String,
         slug: String,
         accesses: Option<u16>,
@@ -81,7 +83,8 @@ impl Record {
     }
 
     /** Instanciate a new `Url`-variant record */
-    pub fn url(
+    #[inline]
+    pub const fn url(
         url: rocket::http::uri::Absolute<'static>,
         slug: String,
         accesses: Option<u16>,
@@ -95,16 +98,19 @@ impl Record {
         }
     }
 
+    #[inline]
     fn key(slug: &str) -> String {
         [STORAGE_PREFIX, slug].concat()
     }
 
     /** Access the [`Record`]'s [`RecordData`] */
-    pub fn data(&self) -> &RecordData {
+    #[inline]
+    pub const fn data(&self) -> &RecordData {
         &self.data
     }
 
     /** Access the [`Record`]'s `slug` */
+    #[inline]
     pub fn slug(&self) -> &str {
         &self.slug
     }
@@ -127,6 +133,7 @@ impl Record {
     }
 
     /** Delete the [`Record`] from the Redis server */
+    #[inline]
     pub async fn delete(&self, conn: &mut redis::aio::Connection) -> crate::Result<()> {
         use redis::AsyncCommands;
 
@@ -171,6 +178,7 @@ impl Record {
     }
 
     /** Checks for the existence of a [`Record`] from it's `slug` in the server */
+    #[inline]
     pub async fn exists(slug: &str, conn: &mut redis::aio::Connection) -> Result<bool> {
         use redis::AsyncCommands;
 
@@ -297,7 +305,8 @@ impl<'r> FromRequest<'r> for RecordSettings {
 
 impl RecordSettings {
     /** Extract the number of accesses from the [`RecordSettings`] */
-    pub fn accesses(&self) -> Option<u16> {
+    #[inline]
+    pub const fn accesses(&self) -> Option<u16> {
         self.max_access
     }
 
@@ -342,7 +351,7 @@ impl RecordSettings {
                 // Check if the random generator made a collision
                 if Record::exists(&slug, &mut *conn).await? {
                     return Err(Error::Intrinsics(
-                        "The randomly-generated slug already exists, this is unexpected",
+                        "The randomly-generated slug already exists, this is unexpected".into(),
                     ));
                 }
 

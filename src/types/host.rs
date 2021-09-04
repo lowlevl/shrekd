@@ -8,7 +8,7 @@ use rocket::{
 };
 
 /** Get the `Host` header from the [`Request`] and wrap it */
-pub struct HostBase<'r>(pub uri::Reference<'r>);
+pub struct HostBase<'r>(uri::Reference<'r>);
 
 #[rocket::async_trait]
 impl<'r> FromRequest<'r> for HostBase<'r> {
@@ -54,6 +54,7 @@ impl<'r> HostBase<'r> {
     }
 
     /** Retrieve the inner [`uri::Reference`] from the [`HostBase`] */
+    #[inline]
     pub fn into_inner(self) -> uri::Reference<'r> {
         self.0
     }

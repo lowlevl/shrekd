@@ -1,3 +1,4 @@
+use std::borrow::Cow;
 use thiserror::Error;
 
 /** Represent's an application's error */
@@ -18,7 +19,7 @@ pub enum Error<'s> {
 
     /* 5xx errors */
     #[error("There was an infortuate error in the application's logic ({0})")]
-    Intrinsics(&'s str),
+    Intrinsics(Cow<'s, str>),
 
     #[error("There's an error with the configuration ({0})")]
     Config(#[from] figment::Error),
