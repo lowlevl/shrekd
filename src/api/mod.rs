@@ -1,4 +1,4 @@
-use rocket::{routes, Responder};
+use rocket::{http::Header, routes, Responder};
 
 mod file;
 mod get;
@@ -12,4 +12,4 @@ pub fn routes() -> Vec<rocket::Route> {
 
 #[derive(Responder)]
 #[response(status = 201)]
-struct CreatedResponse(String);
+struct CreatedResponse(String, Header<'static>);

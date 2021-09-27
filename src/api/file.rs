@@ -1,9 +1,9 @@
-use rocket::{fs::TempFile, put, response::Responder, uri, State};
+use rocket::{fs::TempFile, http::Header, put, response::Responder, uri, State};
 use tokio::fs;
 
 use super::CreatedResponse;
 use crate::{
-    config::{self, Config},
+    config::Config,
     types::{HostBase, Record, RecordSettings},
     Error, Result,
 };
@@ -28,6 +28,7 @@ pub async fn create<'r>(
 
     /* Compute the Record's max age from it's size */
     let max_age = config.curve()?.compute_for(size);
+    let expiry = settings.expiry(Some(max_age)).unwrap(); // <- unwrap here is safe, because the Option conditioned by the `max_age` parameter
 
     /* Instanciate a new record from it */
     let record = Record::file(
@@ -36,7 +37,7 @@ pub async fn create<'r>(
         size as usize,
         slug,
         settings.accesses(),
-        settings.expiry(Some(max_age)),
+        Some(expiry),
     );
 
     log::debug!("Received a file upload {:?}", record);
@@ -53,5 +54,6 @@ pub async fn create<'r>(
     Ok(CreatedResponse(
         host.with(uri!(super::get::get(slug = record.slug())))
             .to_string(),
+        Header::new("Expiry", expiry.timestamp().to_string()),
     ))
 }

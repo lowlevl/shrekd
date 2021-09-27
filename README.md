@@ -12,7 +12,7 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
 - [ ] Nice to have:
     - [x] Retain `file` records filenames and restore it at download
     - [x] Add the full path when returning the URL
-    - [ ] Retention curve depending on the weight, with expiration in return headers
+    - [x] Retention curve depending on the weight, with expiration in return headers
     - [ ] Delete token in return headers, allowing *effort-less* deletion of a record
     - [x] CI:
         - [x] Setup CI for `cargo test`, `cargo clippy`

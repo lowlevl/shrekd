@@ -1,4 +1,4 @@
-use rocket::{post, response::Responder, uri, State};
+use rocket::{http::Header, post, response::Responder, uri, State};
 
 use super::CreatedResponse;
 use crate::{
@@ -43,5 +43,6 @@ pub async fn create<'r>(
     Ok(CreatedResponse(
         host.with(uri!(super::get::get(slug = record.slug())))
             .to_string(),
+        Header::new("Expiry", "-1"),
     ))
 }
