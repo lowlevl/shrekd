@@ -44,7 +44,7 @@ pub async fn create<'r>(
     let slug = settings.slug(config, &mut conn).await?;
 
     /* Instanciate a new record from it */
-    let record = Record::url(url, slug, settings.accesses(), settings.expiry());
+    let record = Record::url(url, slug, settings.accesses(), settings.expiry(None));
 
     log::debug!("Received a new url creation {:?}", record);
 

@@ -3,7 +3,7 @@ use tokio::fs;
 
 use super::CreatedResponse;
 use crate::{
-    config::Config,
+    config::{self, Config},
     types::{HostBase, Record, RecordSettings},
     Error, Result,
 };
@@ -26,6 +26,9 @@ pub async fn create<'r>(
     let storage = fs::canonicalize(&config.data_dir).await?.join(&slug);
     let size = file.len();
 
+    /* Compute the Record's max age from it's size */
+    let max_age = config.curve()?.compute_for(size);
+
     /* Instanciate a new record from it */
     let record = Record::file(
         filename.to_string(),
@@ -33,7 +36,7 @@ pub async fn create<'r>(
         size as usize,
         slug,
         settings.accesses(),
-        settings.expiry(),
+        settings.expiry(Some(max_age)),
     );
 
     log::debug!("Received a file upload {:?}", record);

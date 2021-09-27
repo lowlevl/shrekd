@@ -17,6 +17,8 @@ services:
       SHREKD_MAX_FILE_SIZE: 128000000 # 128 MB
       SHREKD_MAX_PASTE_SIZE: 1000000 # 1 MB
       SHREKD_MAX_URL_SIZE: 32000 # 32 kB
+      SHREKD_RETENTION_MIN_AGE: 604800 # 1 week
+      SHREKD_RETENTION_MAX_AGE: 1814400 # 3 weeks
     volumes:
       - "shrekd-data:/data"
     ports:

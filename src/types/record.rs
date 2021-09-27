@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveDateTime, Utc};
 use rocket::{
     data::ByteUnit,
     request::{self, FromRequest, Request},
@@ -209,9 +209,9 @@ pub struct RecordSettings {
     /** Maximum number of accesses before the removal of the record */
     max_access: Option<u16>,
     /** Utc timestamp of removal of the record */
-    expiry_timestamp: Option<i64>,
+    expiry_timestamp: Option<u64>,
     /** Expiry time from now, in seconds of the record */
-    expire_in: Option<i64>,
+    expire_in: Option<u64>,
     /** Desired `slug` length */
     slug_length: Option<u8>,
     /** Desired custom `slug` */
@@ -310,18 +310,23 @@ impl RecordSettings {
         self.max_access
     }
 
-    /** Compute the expiry from the [`RecordSettings`] */
-    pub fn expiry(&self) -> Option<DateTime<Utc>> {
-        use chrono::{Duration, NaiveDateTime};
+    /** Compute the expiry from the [`RecordSettings`] and an optionnal `max_age` */
+    pub fn expiry(&self, max_age: Option<u64>) -> Option<DateTime<Utc>> {
+        let now = Utc::now().timestamp() as u64;
+        let max_timestamp = max_age.map(|max| now + max);
 
-        match (self.expiry_timestamp, self.expire_in) {
-            (Some(expiry_timestamp), _) => Some(DateTime::<Utc>::from_utc(
-                NaiveDateTime::from_timestamp(expiry_timestamp, 0),
-                Utc,
-            )),
-            (_, Some(expire_in)) => Some(Utc::now() + Duration::seconds(expire_in)),
-            _ => None,
-        }
+        /* Take the `expiry_timestamp` or the `expire_in` value and add it `Utc::now()` */
+        let timestamp = self
+            .expiry_timestamp
+            .or_else(|| self.expire_in.map(|age| now + age));
+
+        /* Apply the max to the timestamp */
+        let timestamp = match max_timestamp {
+            Some(max) => Some(timestamp.map(|ts| u64::min(ts, max)).unwrap_or(max)),
+            None => timestamp,
+        };
+
+        timestamp.map(|ts| DateTime::from_utc(NaiveDateTime::from_timestamp(ts as i64, 0), Utc))
     }
 
     /** Compute the slug from the [`RecordSettings`] and [`Config`] and ensure it's not colliding */

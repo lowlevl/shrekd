@@ -48,7 +48,7 @@ impl Default for Config {
             max_paste_size: 1.megabytes().into(),
             max_url_size: 32.kilobytes().into(),
             retention_min_age: 60 * 60 * 24 * 7,     /* 1 week */
-            retention_max_age: 60 * 60 * 24 * 7 * 3, /* 3 week */
+            retention_max_age: 60 * 60 * 24 * 7 * 3, /* 3 weeks */
         }
     }
 }
