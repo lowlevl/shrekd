@@ -26,7 +26,7 @@ impl<'r> FromRequest<'r> for HostBase<'r> {
             .get_one("X-Forwarded-Proto")
             .unwrap_or(DEFAULT_PROTO);
 
-        log::trace!(
+        tracing::trace!(
             "Received the following hostname `{:?}` and protocol `{}`",
             hostname,
             proto

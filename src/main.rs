@@ -5,7 +5,6 @@
 #![allow(clippy::large_enum_variant)] /* <- This allows for storing the `rocket::response::Redirect` type inside enums, because these are HUGE */
 
 use figment::Figment;
-use simplelog::{ColorChoice, Config as SimpleLogConfig, LevelFilter, TermLogger, TerminalMode};
 use tokio::fs;
 
 mod api;
@@ -23,15 +22,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = Config::from(Config::figment()).expect("Failed to load configuration");
 
     /* Initialize the logger with it's colors and filters */
-    TermLogger::init(
-        LevelFilter::Trace,
-        SimpleLogConfig::default(),
-        TerminalMode::Mixed,
-        ColorChoice::Auto,
-    )
-    .expect("Failed to initialize the logger");
+    tracing_subscriber::fmt::init();
 
-    log::info!(
+    tracing::info!(
         "Creating the permanent ({:?}) & temporary ({:?}) data directories",
         config.data_dir,
         config.temp(),
@@ -45,7 +38,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await
         .expect("Failed to create the temporary data directory");
 
-    log::info!("Initializing the Redis client with {}", config.redis_url);
+    tracing::info!("Initializing the Redis client with {}", config.redis_url);
 
     /* Instanciate the Redis client */
     let redis = redis::Client::open(config.redis_url.as_str())
@@ -57,7 +50,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await
         .expect("Failed to ignite the `Rocket` instance");
 
-    log::info!(
+    tracing::info!(
         "Finally launching the server on `{}:{}` !",
         config.address,
         config.port
@@ -105,7 +98,7 @@ async fn cleanup(config: Config, redis: redis::Client) -> crate::Result<()> {
             None => continue,
             Some(msg) => msg,
         };
-        log::trace!("Received a new notification: {:#?}", msg);
+        tracing::trace!("Received a new notification: {:#?}", msg);
 
         /* Retrieve the key, and split it into prefix and slug */
         let mut key: String = msg.get_payload()?;
@@ -120,11 +113,11 @@ async fn cleanup(config: Config, redis: redis::Client) -> crate::Result<()> {
         match fs::canonicalize(Path::new(&config.data_dir).join(&slug)).await {
             /* File exists, we remove it */
             Ok(path) => {
-                log::debug!("Removing the {:?} since it's record expired", path);
+                tracing::debug!("Removing the {:?} since it's record expired", path);
                 fs::remove_file(path).await?
             }
             /* Otherwise we skip the notification */
-            _ => log::debug!("File was not found, so we have nothing to remove"),
+            _ => tracing::debug!("File was not found, so we have nothing to remove"),
         };
     }
 }

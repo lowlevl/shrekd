@@ -40,13 +40,13 @@ pub async fn create<'r>(
         Some(expiry),
     );
 
-    log::debug!("Received a file upload {:?}", record);
+    tracing::debug!("Received a file upload {:?}", record);
 
     /* Finally try to persist this file, and push the record */
     file.persist_to(storage).await?;
     record.persist(&mut conn).await?;
 
-    log::debug!(
+    tracing::debug!(
         "Successfully persisted the file with the slug `{}`",
         record.slug()
     );

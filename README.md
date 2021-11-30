@@ -41,6 +41,7 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
     - [ ] Server-side file encryption
     - [ ] Use redis transactions if relevant
     - [ ] Clean orphaned files at startup, if relevant and safe
+    - [x] Use `tracing` instead of `log` for event logging
 
 ## Abandonned task lists
 - [ ] Abuse prevention:

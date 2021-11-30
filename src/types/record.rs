@@ -164,11 +164,11 @@ impl Record {
 
         match record.accesses {
             Some(0) => {
-                log::trace!("Record has no accesses left, removing");
+                tracing::trace!("Record has no accesses left, removing");
                 record.delete(&mut *conn).await?
             }
             Some(count) => {
-                log::trace!("Record has `{}` accesses left, pushing change", count);
+                tracing::trace!("Record has `{}` accesses left, pushing change", count);
                 record.persist(&mut *conn).await?
             }
             None => (),

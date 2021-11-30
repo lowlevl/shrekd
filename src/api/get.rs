@@ -23,7 +23,7 @@ pub async fn get<'r>(
         .await?
         .ok_or(crate::Error::NotFound(slug))?;
 
-    log::debug!("Found {:#?}", record);
+    tracing::debug!("Found {:#?}", record);
 
     /* Transform the record's data into the suited response */
     let response = match record.data() {

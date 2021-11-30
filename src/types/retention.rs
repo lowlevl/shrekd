@@ -47,7 +47,7 @@ impl RetentionCurve {
         let plot = f64::powi(size as f64 / self.max_size as f64, 2);
         let retention = self.max_age as f64 - window as f64 * plot;
 
-        log::trace!(
+        tracing::trace!(
             "Computed a retention of `{}` seconds for a size of {}",
             retention,
             ByteUnit::from(size)
