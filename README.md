@@ -38,9 +38,11 @@ SHaRe, SHoRten oK Daemon, simple file, paste &amp; url sharing daemon
     - [x] Serialize and deserialize data as binary, not JSON
     - [ ] Add unit tests to the project
     - [x] Take care of random slug collision
-    - [ ] Server-side file encryption
     - [ ] Use redis transactions if relevant
-    - [ ] Clean orphaned files at startup, if relevant and safe
+    - [ ] Store files to S3 for it to be safer
+        - ~~[ ] Clean orphaned files at startup, if relevant and safe~~
+            Use S3 object server-side expiry
+        - [ ] Enable Server-side file encryption
     - [x] Use `tracing` instead of `log` for event logging
 
 ## Abandonned task lists
