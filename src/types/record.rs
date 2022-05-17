@@ -217,6 +217,7 @@ pub struct RecordSettings {
     /** Desired custom `slug` */
     custom_slug: Option<String>,
     /** Checksum of the record to be verified upon upload */
+    #[allow(dead_code)]
     data_checksum: Option<String>,
 }
 

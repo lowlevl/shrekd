@@ -64,7 +64,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         },
         /* This launches the server */
         res = rocket.launch() => {
-            Ok(res?)
+            let _ = res?;
+
+            Ok(())
         }
     }
 }

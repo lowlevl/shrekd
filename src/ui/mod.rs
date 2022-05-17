@@ -26,7 +26,7 @@ fn index<'r>(
         "version": env!("CARGO_PKG_VERSION")
     });
 
-    Ok(content::Html(template.render(&globals)?))
+    Ok(content::RawHtml(template.render(&globals)?))
 }
 
 pub fn attach(rocket: rocket::Rocket<rocket::Build>) -> rocket::Rocket<rocket::Build> {
