@@ -1,4 +1,10 @@
-use rocket::{http::Header, post, response::Responder, uri, State};
+use rocket::{
+    data::{ByteUnit, Data},
+    http::Header,
+    post,
+    response::Responder,
+    uri, State,
+};
 
 use super::CreatedResponse;
 use crate::{
@@ -9,18 +15,24 @@ use crate::{
 
 #[post("/paste", data = "<data>")]
 pub async fn create<'r>(
-    data: Result<Vec<u8>, std::io::Error>,
+    data: Data<'r>,
     host: HostBase<'_>,
     settings: RecordSettings,
     config: &State<Config>,
     redis: &State<redis::Client>,
 ) -> Result<impl Responder<'r, 'static>> {
     /* If the paste data is malformed return an error */
-    let data = data
-        .map_err(|err| Error::PasteCreation(err.to_string()))
-        .and_then(|bytes| {
-            String::from_utf8(bytes).map_err(|err| Error::PasteCreation(err.to_string()))
-        })?;
+    let bytes = data
+        .open(config.max_paste_size * ByteUnit::B)
+        .into_bytes()
+        .await?;
+
+    if !bytes.is_complete() {
+        return Err(Error::TooLarge);
+    }
+
+    let text = String::from_utf8(bytes.into_inner())
+        .map_err(|err| Error::PasteCreation(err.to_string()))?;
 
     let mut conn = redis.get_async_connection().await?;
 
@@ -28,7 +40,7 @@ pub async fn create<'r>(
     let slug = settings.slug(config, &mut conn).await?;
 
     /* Instanciate a new record from it */
-    let record = Record::paste(data, slug, settings.accesses(), settings.expiry(None));
+    let record = Record::paste(text, slug, settings.accesses(), settings.expiry(None));
 
     tracing::debug!("Received a new paste creation {:?}", record);
 

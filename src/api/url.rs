@@ -1,4 +1,10 @@
-use rocket::{http::Header, post, response::Responder, uri, State};
+use rocket::{
+    data::{ByteUnit, Data},
+    http::Header,
+    post,
+    response::Responder,
+    uri, State,
+};
 
 use super::CreatedResponse;
 use crate::{
@@ -9,15 +15,23 @@ use crate::{
 
 #[post("/url", data = "<data>")]
 pub async fn create<'r>(
-    data: Result<String, std::io::Error>,
+    data: Data<'r>,
     host: HostBase<'_>,
     settings: RecordSettings,
     config: &State<Config>,
     redis: &State<redis::Client>,
 ) -> Result<impl Responder<'r, 'static>> {
     /* If the url data is malformed return an error */
-    let url = data.map_err(|err| Error::UrlCreation(err.to_string()))?;
-    let url = rocket::http::uri::Absolute::parse_owned(url)
+    let url = data
+        .open(config.max_url_size * ByteUnit::B)
+        .into_string()
+        .await?;
+
+    if !url.is_complete() {
+        return Err(Error::TooLarge);
+    }
+
+    let url = rocket::http::uri::Absolute::parse_owned(url.into_inner())
         .map_err(|err| Error::UrlCreation(err.to_string()))?;
 
     /* If the scheme is not `http` or `https`, throw an Err */

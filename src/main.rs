@@ -131,9 +131,6 @@ fn rocket(config: Config, redis: redis::Client) -> rocket::Rocket<rocket::Build>
             .merge(("address", &config.address))
             .merge(("port", &config.port))
             .merge(("temp_dir", &config.temp()))
-            .merge(("limits.file", &config.max_file_size))
-            .merge(("limits.bytes", &config.max_paste_size))
-            .merge(("limits.string", &config.max_url_size)),
     )
     /* Mount `/` ::api routes */
     .mount("/", api::routes())

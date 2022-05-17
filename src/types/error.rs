@@ -8,8 +8,8 @@ pub enum Error<'s> {
     #[error("Couldn't find the record identified with the slug `{0}`")]
     NotFound(String),
 
-    #[error("File upload failed ({0})")]
-    FileUpload(String),
+    #[error("Payload size was exceeded, refer to documentation")]
+    TooLarge,
 
     #[error("Paste creation failed ({0})")]
     PasteCreation(String),
@@ -42,7 +42,7 @@ impl<'r, 'o: 'r> rocket::response::Responder<'r, 'o> for Error<'o> {
         use rocket::{http::Status, response::status, serde::json};
         use serde::Serialize;
 
-        #[derive(Serialize)]
+        #[derive(Serialize, Debug)]
         struct ErrorResponse {
             message: String,
         }
@@ -50,10 +50,13 @@ impl<'r, 'o: 'r> rocket::response::Responder<'r, 'o> for Error<'o> {
             message: self.to_string(),
         });
 
+        tracing::error!("Error: {:?}", error);
+
         Ok(match self {
             /* 4xx errors */
             Error::NotFound(_) => status::NotFound(error).respond_to(req)?,
-            Error::FileUpload(_) | Error::PasteCreation(_) | Error::UrlCreation(_) => {
+            Error::TooLarge => status::Custom(Status::PayloadTooLarge, error).respond_to(req)?,
+            Error::PasteCreation(_) | Error::UrlCreation(_) => {
                 status::Custom(Status::UnprocessableEntity, error).respond_to(req)?
             }
 
