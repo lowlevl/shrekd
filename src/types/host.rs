@@ -33,7 +33,7 @@ impl<'r> FromRequest<'r> for HostBase<'r> {
         );
 
         match hostname
-            .map(|hostname| uri::Authority::parse(hostname))
+            .map(uri::Authority::parse)
             .map(|authority| {
                 authority.map(|authority| {
                     uri::Reference::parse_owned(format!("{}://{}", proto, authority))
