@@ -6,8 +6,6 @@ use std::path::PathBuf;
 
 use crate::{types::RetentionCurve, Error, Result};
 
-const TEMPDIR_NAME: &str = ".temporary";
-
 /** Global configuration structure */
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Config {
@@ -64,12 +62,6 @@ impl Config {
     #[inline]
     pub fn figment() -> Figment {
         Figment::from(Config::default()).merge(figment::providers::Env::prefixed("SHREKD_"))
-    }
-
-    /** Compute and get the temporary file path */
-    #[inline]
-    pub fn temp(&self) -> PathBuf {
-        self.data_dir.join(TEMPDIR_NAME)
     }
 
     /** Get the [`RetentionCurve`] from the current configuration */

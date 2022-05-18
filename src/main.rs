@@ -25,18 +25,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::fmt::init();
 
     tracing::info!(
-        "Creating the permanent ({:?}) & temporary ({:?}) data directories",
+        "Creating the permanent ({:?}) data directory",
         config.data_dir,
-        config.temp(),
     );
 
     /* Initialize the directories needed for data storage */
     fs::create_dir_all(&config.data_dir)
         .await
         .expect("Failed to create the permanent data directory");
-    fs::create_dir_all(&config.temp())
-        .await
-        .expect("Failed to create the temporary data directory");
 
     tracing::info!("Initializing the Redis client with {}", config.redis_url);
 
@@ -129,8 +125,7 @@ fn rocket(config: Config, redis: redis::Client) -> rocket::Rocket<rocket::Build>
     let rocket = rocket::custom(
         Figment::from(rocket::Config::default())
             .merge(("address", &config.address))
-            .merge(("port", &config.port))
-            .merge(("temp_dir", &config.temp()))
+            .merge(("port", &config.port)),
     )
     /* Mount `/` ::api routes */
     .mount("/", api::routes())
